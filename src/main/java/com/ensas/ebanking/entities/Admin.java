@@ -1,17 +1,27 @@
 package com.ensas.ebanking.entities;
 
-import javax.persistence.Entity;
+import javax.persistence.*;
 import java.time.LocalDate;
 
 @Entity
 public class Admin extends User{
 
     private String cin;
+
     private String  nom;
+
     private String  prenom;
+
     private String  phone;
+
     private String  email;
+
     private LocalDate date_naissance;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "banque_id", referencedColumnName = "id")
+    private Banque banque;
+
 
     public Admin() {
     }
@@ -72,5 +82,13 @@ public class Admin extends User{
 
     public void setDate_naissance(LocalDate date_naissance) {
         this.date_naissance = date_naissance;
+    }
+
+    public Banque getBanque() {
+        return banque;
+    }
+
+    public void setBanque(Banque banque) {
+        this.banque = banque;
     }
 }

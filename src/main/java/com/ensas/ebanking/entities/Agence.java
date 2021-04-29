@@ -1,8 +1,8 @@
-package com.ensas.ebanking.model;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
+package com.ensas.ebanking.entities;
 
 import javax.persistence.*;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 public class Agence {
@@ -27,10 +27,29 @@ public class Agence {
     @JoinColumn(name = "banque_id", referencedColumnName = "id")
     private Banque banque;
 
+    @OneToOne(mappedBy = "agence")
+    private Agent agent;
+
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "adresse_id", referencedColumnName = "id")
     private Adresse adresse;
 
+    @OneToMany(mappedBy = "agence")
+    private Set<Client> clients = new HashSet<>();
+
+
+    public Agence(){ }
+
+    public Agence(Long id, String code, String nom, String horaire_debut, String horaire_fin, String num_tele, Banque banque, Adresse adresse) {
+        this.id = id;
+        this.code = code;
+        this.nom = nom;
+        this.horaire_debut = horaire_debut;
+        this.horaire_fin = horaire_fin;
+        this.num_tele = num_tele;
+        this.banque = banque;
+        this.adresse = adresse;
+    }
 
     public Long getId() {
         return id;
@@ -86,5 +105,21 @@ public class Agence {
 
     public void setBanque(Banque banque) {
         this.banque = banque;
+    }
+
+    public Adresse getAdresse() {
+        return adresse;
+    }
+
+    public void setAdresse(Adresse adresse) {
+        this.adresse = adresse;
+    }
+
+    public Set<Client> getClients() {
+        return clients;
+    }
+
+    public void setClients(Set<Client> clients) {
+        this.clients = clients;
     }
 }

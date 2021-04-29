@@ -2,8 +2,10 @@ package com.ensas.ebanking.entities;
 
 import com.ensas.ebanking.common.Roles;
 
-import javax.persistence.Entity;
+import javax.persistence.*;
 import java.time.LocalDate;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 public class Agent extends User{
@@ -15,6 +17,14 @@ public class Agent extends User{
     private String  phone;
     private String  email;
     private LocalDate date_naissance;
+
+    @OneToMany(mappedBy = "agent")
+    private Set<Transaction> transactions = new HashSet<>();
+
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "agence_id", referencedColumnName = "id")
+    private Agence agence;
+
 
     public Agent() {
     }

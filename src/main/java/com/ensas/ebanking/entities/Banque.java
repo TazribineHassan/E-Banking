@@ -1,4 +1,4 @@
-package com.ensas.ebanking.model;
+package com.ensas.ebanking.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -23,6 +23,19 @@ public class Banque {
     @OneToMany(mappedBy = "banque")
     private Set<Agence> agences = new HashSet<>();
 
+    @JsonIgnore
+    @OneToOne(mappedBy = "banque")
+    private Admin admin;
+
+
+    public Banque(){ }
+
+    public Banque(Long id, String nom, float solde, Set<Agence> agences) {
+        this.id = id;
+        this.nom = nom;
+        this.solde = solde;
+        this.agences = agences;
+    }
 
     public Long getId() {
         return id;
@@ -54,5 +67,13 @@ public class Banque {
 
     public void setAgences(Set<Agence> agences) {
         this.agences = agences;
+    }
+
+    public Admin getAdmin() {
+        return admin;
+    }
+
+    public void setAdmin(Admin admin) {
+        this.admin = admin;
     }
 }

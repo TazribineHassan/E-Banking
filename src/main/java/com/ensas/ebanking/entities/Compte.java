@@ -1,4 +1,4 @@
-package com.ensas.ebanking.model;
+package com.ensas.ebanking.entities;
 
 import javax.persistence.*;
 
@@ -14,6 +14,16 @@ public class Compte {
 
     private String solde;
 
+    @OneToOne(mappedBy = "compte")
+    private Client client;
+
+    public Compte() { }
+
+    public Compte(Long id, String num_compte, String solde) {
+        this.id = id;
+        this.num_compte = num_compte;
+        this.solde = solde;
+    }
 
     public Long getId() {
         return id;

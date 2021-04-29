@@ -1,6 +1,8 @@
 package com.ensas.ebanking.entities;
 
-import javax.persistence.Entity;
+import javax.persistence.*;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 public class Client extends User{
@@ -12,8 +14,19 @@ public class Client extends User{
     private String type_client;
     private String date_naissance;
 
-    public Client() {
-    }
+    //foreign keys
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "agence_id", referencedColumnName = "id")
+    private Agence agence;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "compte_id", referencedColumnName = "id")
+    private Compte compte;
+
+    @OneToMany(mappedBy = "client")
+    private Set<Transaction> transactions = new HashSet<>();
+
+    public Client() { }
 
     public Client(String username, String password, String roles, boolean active, String cin, String nom, String prenom, String email, String phone, String type_client, String date_naissance) {
         super(username, password, roles, active);
@@ -80,5 +93,13 @@ public class Client extends User{
 
     public void setPhone(String phone) {
         this.phone = phone;
+    }
+
+    public Agence getAgence() {
+        return agence;
+    }
+
+    public void setAgence(Agence agence) {
+        this.agence = agence;
     }
 }

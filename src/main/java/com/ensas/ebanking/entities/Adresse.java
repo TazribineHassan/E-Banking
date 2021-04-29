@@ -1,4 +1,4 @@
-package com.ensas.ebanking.model;
+package com.ensas.ebanking.entities;
 
 import javax.persistence.*;
 
@@ -21,6 +21,17 @@ public class Adresse {
     @OneToOne(mappedBy = "adresse")
     private Agence agence;
 
+
+    public Adresse() { }
+
+    public Adresse(Long id, String rue, String ville, String code_postal, String pays, Agence agence) {
+        this.id = id;
+        this.rue = rue;
+        this.ville = ville;
+        this.code_postal = code_postal;
+        this.pays = pays;
+        this.agence = agence;
+    }
 
     public Long getId() {
         return id;
