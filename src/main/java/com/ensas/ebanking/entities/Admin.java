@@ -4,19 +4,10 @@ import javax.persistence.*;
 import java.time.LocalDate;
 
 @Entity
+@DiscriminatorValue("Admin")
 public class Admin extends User{
 
-    private String cin;
 
-    private String  nom;
-
-    private String  prenom;
-
-    private String  phone;
-
-    private String  email;
-
-    private LocalDate date_naissance;
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "banque_id", referencedColumnName = "id")
@@ -26,63 +17,11 @@ public class Admin extends User{
     public Admin() {
     }
 
-    public Admin(String username, String password, String roles, boolean active, String cin, String nom, String prenom, String phone, String email, LocalDate date_naissance) {
-        super(username, password, roles, active);
-        this.cin = cin;
-        this.nom = nom;
-        this.prenom = prenom;
-        this.phone = phone;
-        this.email = email;
-        this.date_naissance = date_naissance;
+    public Admin(String cin, String username, String nom, String prenom, String email, String num_tele, LocalDate date_naissance, String password, boolean active) {
+        super(cin, username, nom, prenom, email, num_tele, date_naissance, password, active);
     }
 
-    public String getCin() {
-        return cin;
-    }
 
-    public void setCin(String cin) {
-        this.cin = cin;
-    }
-
-    public String getNom() {
-        return nom;
-    }
-
-    public void setNom(String nom) {
-        this.nom = nom;
-    }
-
-    public String getPrenom() {
-        return prenom;
-    }
-
-    public void setPrenom(String prenom) {
-        this.prenom = prenom;
-    }
-
-    public String getPhone() {
-        return phone;
-    }
-
-    public void setPhone(String phone) {
-        this.phone = phone;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public LocalDate getDate_naissance() {
-        return date_naissance;
-    }
-
-    public void setDate_naissance(LocalDate date_naissance) {
-        this.date_naissance = date_naissance;
-    }
 
     public Banque getBanque() {
         return banque;
