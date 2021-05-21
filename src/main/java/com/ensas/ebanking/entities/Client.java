@@ -29,11 +29,20 @@ public class Client extends User {
 
     public Client() { }
 
-    public Client(String cin, String nom, String prenom, String email, String num_tele, LocalDate date_naissance, String profileImageUrl, Date lastLoginDate, Date lastLoginDateDisplay, String username, String password, String[] roles, String[] authorities, boolean isActive, boolean isNotLocked, String type_client, Agence agence, Compte compte, Set<Transaction> transactions) {
-        super(cin, nom, prenom, email, num_tele, date_naissance, profileImageUrl, lastLoginDate, lastLoginDateDisplay, username, password, roles, authorities, isActive, isNotLocked);
+    public Client(String cin, String nom, String prenom, String email, String num_tele, LocalDate date_naissance, String profileImageUrl, Date lastLoginDate, Date lastLoginDateDisplay, Date joinDate, String username, String password, String roles, String[] authorities, boolean isActive, boolean isNotLocked, String type_client, Agence agence, Compte compte, Set<Transaction> transactions) {
+        super(cin, nom, prenom, email, num_tele, date_naissance, profileImageUrl, lastLoginDate, lastLoginDateDisplay, joinDate, username, password, roles, authorities, isActive, isNotLocked);
         this.type_client = type_client;
         this.agence = agence;
         this.compte = compte;
+        this.transactions = transactions;
+    }
+
+    public Client(int id, String cin, String nom, String prenom, String email, String num_tele, LocalDate date_naissance, String profileImageUrl, Date lastLoginDate, Date lastLoginDateDisplay, Date joinDate, String username, String password, String roles, String[] authorities, boolean isActive, boolean isNotLocked, String type_client, Agence agence, Compte compte, Set<Transaction> transactions) {
+        super(id, cin, nom, prenom, email, num_tele, date_naissance, profileImageUrl, lastLoginDate, lastLoginDateDisplay, joinDate, username, password, roles, authorities, isActive, isNotLocked);
+        this.type_client = type_client;
+        this.agence = agence;
+        this.compte = compte;
+        this.transactions = transactions;
     }
 
     public String getType_client() {

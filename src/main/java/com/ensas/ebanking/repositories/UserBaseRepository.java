@@ -19,4 +19,6 @@ public interface UserBaseRepository <T extends User> extends CrudRepository<T,In
 
     @Override
     <S extends T> S save(S s);
+
+    User findUserByEmail(String email);
 }

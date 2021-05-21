@@ -21,10 +21,11 @@ public abstract class User {
     private String profileImageUrl;
     private Date lastLoginDate;
     private Date lastLoginDateDisplay;
+    private Date joinDate;
     // for spring security.
     private String username;
     private String password;
-    private String[] roles;
+    private String roles;
     private String[] authorities;
     private boolean isActive;
     private boolean isNotLocked;
@@ -32,7 +33,7 @@ public abstract class User {
     public User() {
     }
 
-    public User(int id, String cin, String nom, String prenom, String email, String num_tele, LocalDate date_naissance, String profileImageUrl, Date lastLoginDate, Date lastLoginDateDisplay, String username, String password, String[] roles, String[] authorities, boolean isActive, boolean isNotLocked) {
+    public User(int id, String cin, String nom, String prenom, String email, String num_tele, LocalDate date_naissance, String profileImageUrl, Date lastLoginDate, Date lastLoginDateDisplay, Date joinDate, String username, String password, String roles, String[] authorities, boolean isActive, boolean isNotLocked) {
         this.id = id;
         this.cin = cin;
         this.nom = nom;
@@ -43,6 +44,7 @@ public abstract class User {
         this.profileImageUrl = profileImageUrl;
         this.lastLoginDate = lastLoginDate;
         this.lastLoginDateDisplay = lastLoginDateDisplay;
+        this.joinDate = joinDate;
         this.username = username;
         this.password = password;
         this.roles = roles;
@@ -51,7 +53,8 @@ public abstract class User {
         this.isNotLocked = isNotLocked;
     }
 
-    public User(String cin, String nom, String prenom, String email, String num_tele, LocalDate date_naissance, String profileImageUrl, Date lastLoginDate, Date lastLoginDateDisplay, String username, String password, String[] roles, String[] authorities, boolean isActive, boolean isNotLocked) {
+
+    public User(String cin, String nom, String prenom, String email, String num_tele, LocalDate date_naissance, String profileImageUrl, Date lastLoginDate, Date lastLoginDateDisplay, Date joinDate, String username, String password, String roles, String[] authorities, boolean isActive, boolean isNotLocked) {
         this.cin = cin;
         this.nom = nom;
         this.prenom = prenom;
@@ -61,6 +64,7 @@ public abstract class User {
         this.profileImageUrl = profileImageUrl;
         this.lastLoginDate = lastLoginDate;
         this.lastLoginDateDisplay = lastLoginDateDisplay;
+        this.joinDate = joinDate;
         this.username = username;
         this.password = password;
         this.roles = roles;
@@ -101,11 +105,11 @@ public abstract class User {
         this.lastLoginDateDisplay = lastLoginDateDisplay;
     }
 
-    public String[] getRoles() {
+    public String getRoles() {
         return roles;
     }
 
-    public void setRoles(String[] roles) {
+    public void setRoles(String roles) {
         this.roles = roles;
     }
 
@@ -191,6 +195,13 @@ public abstract class User {
         this.num_tele = num_tele;
     }
 
+    public Date getJoinDate() {
+        return joinDate;
+    }
+
+    public void setJoinDate(Date joinDate) {
+        this.joinDate = joinDate;
+    }
     public String getPassword() {
         return password;
     }
