@@ -8,7 +8,6 @@ import com.ensas.ebanking.exceptions.domain.EmailExistException;
 import com.ensas.ebanking.exceptions.domain.EmailNotFoundException;
 import com.ensas.ebanking.exceptions.domain.UserExistExistException;
 import com.ensas.ebanking.exceptions.domain.UserNotFoundException;
-import com.ensas.ebanking.repositories.UserBaseRepository;
 import com.ensas.ebanking.repositories.UserRepository;
 import com.ensas.ebanking.services.EmailService;
 import com.ensas.ebanking.services.LoginAttemptService;
@@ -57,23 +56,20 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         this.emailService = emailService;
     }
 
-    public UserServiceImpl(UserRepository userRepository) {
-        this.userRepository = userRepository;
-    }
-
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user  = userRepository.findUserByUsername(username);
+        User user = userRepository.findUserByUsername(username);
         if(user == null){
-            logger.error("User was not found");
-            throw new UsernameNotFoundException("User was not found");
+            logger.error(NO_USER_FOUND_BY_USERNAME + username);
+            throw new UsernameNotFoundException(NO_USER_FOUND_BY_USERNAME + username);
         }else {
+            validateLoginAttempt(user);
             user.setLastLoginDateDisplay(user.getLastLoginDate());
             user.setLastLoginDate(new Date());
             userRepository.save(user);
             UserPrincipal userPrincipal = new UserPrincipal(user);
             logger.info("Returning found by username :" + username);
-            return userPrincipal;
+            return  userPrincipal;
         }
     }
 

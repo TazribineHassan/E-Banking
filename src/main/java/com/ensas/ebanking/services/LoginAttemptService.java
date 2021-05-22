@@ -18,7 +18,7 @@ public class LoginAttemptService {
 
     public LoginAttemptService() {
         super();
-        loginAttemptCache = CacheBuilder.newBuilder().expireAfterWrite(10, MINUTES).maximumSize(500)
+        loginAttemptCache = CacheBuilder.newBuilder().expireAfterWrite(15, MINUTES).maximumSize(500)
                 .build(new CacheLoader<String, Integer>() {
                     @Override
                     public Integer load(String s) throws Exception {
