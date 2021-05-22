@@ -3,11 +3,9 @@ package com.ensas.ebanking.enumeration;
 import static com.ensas.ebanking.constant.Authorities.*;
 
 public enum Role {
-    ROLE_USER(USER_AUTHORITIES),
-    ROLE_HR(HR_AUTHORITIES),
-    ROLE_MANAGER(MANAGER_AUTHORITIES),
-    ROLE_ADMIN(MANAGER_AUTHORITIES),
-    ROLE_SUPPER_ADMIN(SUPPER_ADMIN_AUTHORITIES);
+    ROLE_CLIENT(CLIENT_AUTHORITIES),
+    ROLE_AGENT(AGENT_AUTHORITIES),
+    ROLE_ADMIN(ADMIN_AUTHORITIES);
 
     private String[] authorities;
 
