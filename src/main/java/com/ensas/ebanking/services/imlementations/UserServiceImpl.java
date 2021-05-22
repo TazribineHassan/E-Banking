@@ -34,7 +34,7 @@ import java.util.List;
 
 import static com.ensas.ebanking.constant.FileConstant.*;
 import static com.ensas.ebanking.constant.UserImplementationConstant.*;
-import static com.ensas.ebanking.enumeration.Role.ROLE_USER;
+import static com.ensas.ebanking.enumeration.Role.ROLE_ADMIN;
 
 
 @Service
@@ -104,8 +104,8 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         admin.setPassword(encodePassword(password));
         admin.setActive(true);
         admin.setNotLocked(true);
-        admin.setRoles(ROLE_USER.name());
-        admin.setAuthorities(ROLE_USER.getAuthorities());
+        admin.setRoles(ROLE_ADMIN.name());
+        admin.setAuthorities(ROLE_ADMIN.getAuthorities());
         admin.setProfileImageUrl(getTemporaryProfileImageUrl(username));
         //emailService.sendNewPasswordEmail(nom, password, email);
         logger.info("New user password: " + password);
