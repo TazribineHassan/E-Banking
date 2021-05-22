@@ -4,6 +4,7 @@ package com.ensas.ebanking.resource;
 import com.ensas.ebanking.domains.User;
 import com.ensas.ebanking.domains.UserPrincipal;
 import com.ensas.ebanking.entities.Admin;
+import com.ensas.ebanking.entities.LoginUser;
 import com.ensas.ebanking.exceptions.domain.EmailExistException;
 import com.ensas.ebanking.exceptions.domain.ExceptionHandling;
 import com.ensas.ebanking.exceptions.domain.UserExistExistException;
@@ -45,10 +46,8 @@ public class UserResource extends ExceptionHandling {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<User>  login(@RequestBody Admin admin)  {
-        //System.out.println("Befor authentication");
+    public ResponseEntity<User>  login(@RequestBody LoginUser admin)  {
         authentication(admin.getUsername(), admin.getPassword());
-        //System.out.println("After authentication");
         User loginUser = userService.findUserByUsername(admin.getUsername());
         UserPrincipal userPrincipal = new UserPrincipal(loginUser);
         HttpHeaders jwtHeader = getJwtHeader(userPrincipal);
@@ -56,9 +55,7 @@ public class UserResource extends ExceptionHandling {
     }
 
     private void authentication(String username, String password) {
-        System.out.println("inside authentication TOP");
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, password));
-        System.out.println("inside authentication BOTTOM");
     }
 
     private HttpHeaders getJwtHeader(UserPrincipal userPrincipal) {
