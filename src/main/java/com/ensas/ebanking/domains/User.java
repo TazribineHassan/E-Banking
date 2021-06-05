@@ -9,8 +9,7 @@ import java.time.LocalDate;
 import java.util.Date;
 
 @Entity
-@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
-@DiscriminatorColumn(name = "Type_User",discriminatorType = DiscriminatorType.STRING,length = 5)
+@Inheritance(strategy = InheritanceType.JOINED)
 public abstract class User implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -21,8 +20,7 @@ public abstract class User implements Serializable {
     private String prenom;
     private String email;
     private String num_tele;
-    private LocalDate date_naissance;
-    private String profileImageUrl;
+    private Date date_naissance;
     private Date lastLoginDate;
     private Date lastLoginDateDisplay;
     private Date joinDate;
@@ -38,7 +36,7 @@ public abstract class User implements Serializable {
     }
 
 
-    public User(int id, String cin, String nom, String prenom, String email, String num_tele, LocalDate date_naissance, String profileImageUrl, Date lastLoginDate, Date lastLoginDateDisplay, Date joinDate, String username, String password, String roles, String[] authorities, boolean isActive, boolean isNotLocked) {
+    public User(int id, String cin, String nom, String prenom, String email, String num_tele, Date date_naissance, Date lastLoginDate, Date lastLoginDateDisplay, Date joinDate, String username, String password, String roles, String[] authorities, boolean isActive, boolean isNotLocked) {
         this.id = id;
         this.cin = cin;
         this.nom = nom;
@@ -46,7 +44,7 @@ public abstract class User implements Serializable {
         this.email = email;
         this.num_tele = num_tele;
         this.date_naissance = date_naissance;
-        this.profileImageUrl = profileImageUrl;
+
         this.lastLoginDate = lastLoginDate;
         this.lastLoginDateDisplay = lastLoginDateDisplay;
         this.joinDate = joinDate;
@@ -59,14 +57,13 @@ public abstract class User implements Serializable {
     }
 
 
-    public User(String cin, String nom, String prenom, String email, String num_tele, LocalDate date_naissance, String profileImageUrl, Date lastLoginDate, Date lastLoginDateDisplay, Date joinDate, String username, String password, String roles, String[] authorities, boolean isActive, boolean isNotLocked) {
+    public User(String cin, String nom, String prenom, String email, String num_tele, Date date_naissance, Date lastLoginDate, Date lastLoginDateDisplay, Date joinDate, String username, String password, String roles, String[] authorities, boolean isActive, boolean isNotLocked) {
         this.cin = cin;
         this.nom = nom;
         this.prenom = prenom;
         this.email = email;
         this.num_tele = num_tele;
         this.date_naissance = date_naissance;
-        this.profileImageUrl = profileImageUrl;
         this.lastLoginDate = lastLoginDate;
         this.lastLoginDateDisplay = lastLoginDateDisplay;
         this.joinDate = joinDate;
@@ -78,20 +75,12 @@ public abstract class User implements Serializable {
         this.isNotLocked = isNotLocked;
     }
 
-    public LocalDate getDate_naissance() {
+    public Date getDate_naissance() {
         return date_naissance;
     }
 
-    public void setDate_naissance(LocalDate date_naissance) {
+    public void setDate_naissance(Date date_naissance) {
         this.date_naissance = date_naissance;
-    }
-
-    public String getProfileImageUrl() {
-        return profileImageUrl;
-    }
-
-    public void setProfileImageUrl(String profileImageUrl) {
-        this.profileImageUrl = profileImageUrl;
     }
 
     public Date getLastLoginDate() {

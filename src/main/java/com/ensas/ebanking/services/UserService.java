@@ -10,10 +10,11 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.mail.MessagingException;
 import java.io.IOException;
+import java.util.Date;
 import java.util.List;
 
 public interface UserService {
-    Admin register(String cin, String nom, String prenom, String username, String email) throws UserNotFoundException, UserExistExistException, EmailExistException, MessagingException;
+    Admin register(String cin, String nom, String prenom, String username, String email, Date dob) throws UserNotFoundException, UserExistExistException, EmailExistException, MessagingException;
     List<User> getUsers();
     User findUserByUsername(String username);
     User findUserByEmail(String email);
