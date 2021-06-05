@@ -21,6 +21,8 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.mail.MessagingException;
 
+import java.util.Date;
+
 import static com.ensas.ebanking.constant.SecurityConstant.JWT_TOKEN_HEADER;
 import static org.springframework.http.HttpStatus.OK;
 
@@ -41,14 +43,14 @@ public class UserResource extends ExceptionHandling {
 
     @PostMapping("/admin/register")
     public ResponseEntity<Admin> register(@RequestBody Admin admin) throws UserNotFoundException, UserExistExistException, EmailExistException, MessagingException {
-        Admin newAdmin =  userService.register(admin.getCin(), admin.getNom(), admin.getPrenom(), admin.getUsername(), admin.getEmail());
+        Admin newAdmin =  userService.register(admin.getCin(), admin.getNom(), admin.getPrenom(), admin.getUsername(), admin.getEmail(), new Date());
         return new ResponseEntity<>(newAdmin, OK);
     }
 
     @PostMapping("/login")
-    public ResponseEntity<User>  login(@RequestBody LoginUser admin)  {
-        authentication(admin.getUsername(), admin.getPassword());
-        User loginUser = userService.findUserByUsername(admin.getUsername());
+    public ResponseEntity<User>  login(@RequestBody LoginUser user)  {
+        authentication(user.getUsername(), user.getPassword());
+        User loginUser = userService.findUserByUsername(user.getUsername());
         UserPrincipal userPrincipal = new UserPrincipal(loginUser);
         HttpHeaders jwtHeader = getJwtHeader(userPrincipal);
         return new ResponseEntity<>(loginUser, jwtHeader, OK);

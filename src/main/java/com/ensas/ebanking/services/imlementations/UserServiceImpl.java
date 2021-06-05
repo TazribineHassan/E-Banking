@@ -86,7 +86,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @Override
-    public Admin register(String cin, String nom, String prenom, String username, String email) throws UserNotFoundException, UserExistExistException, EmailExistException, MessagingException {
+    public Admin register(String cin, String nom, String prenom, String username, String email, Date dob) throws UserNotFoundException, UserExistExistException, EmailExistException, MessagingException {
         validateNewUsernameAndEmail(StringUtils.EMPTY, username, email);
         Banque banque = new Banque();
         Admin admin = new Admin();
@@ -102,11 +102,11 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         admin.setJoinDate(new Date());
         admin.setBanque(banque);
         admin.setPassword(encodePassword(password));
+        admin.setDate_naissance(dob);
         admin.setActive(true);
         admin.setNotLocked(true);
         admin.setRoles(ROLE_ADMIN.name());
         admin.setAuthorities(ROLE_ADMIN.getAuthorities());
-        admin.setProfileImageUrl(getTemporaryProfileImageUrl(username));
         //emailService.sendNewPasswordEmail(nom, password, email);
         logger.info("New user password: " + password);
         this.userRepository.save(admin);
