@@ -1,5 +1,7 @@
 package com.ensas.ebanking.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 
 @Entity
@@ -14,6 +16,7 @@ public class Compte {
 
     private String solde;
 
+    @JsonIgnore
     @OneToOne(mappedBy = "compte")
     private Client client;
 
@@ -47,5 +50,13 @@ public class Compte {
 
     public void setSolde(String solde) {
         this.solde = solde;
+    }
+
+    public Client getClient() {
+        return client;
+    }
+
+    public void setClient(Client client) {
+        this.client = client;
     }
 }
