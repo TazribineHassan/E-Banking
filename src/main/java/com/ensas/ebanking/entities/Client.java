@@ -1,6 +1,7 @@
 package com.ensas.ebanking.entities;
 
 import com.ensas.ebanking.domains.User;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
 import java.time.LocalDate;
@@ -59,5 +60,21 @@ public class Client extends User {
 
     public void setAgence(Agence agence) {
         this.agence = agence;
+    }
+
+    public Compte getCompte() {
+        return compte;
+    }
+
+    public void setCompte(Compte compte) {
+        this.compte = compte;
+    }
+
+    public Set<Transaction> getTransactions() {
+        return transactions;
+    }
+
+    public void setTransactions(Set<Transaction> transactions) {
+        this.transactions = transactions;
     }
 }

@@ -48,5 +48,19 @@ public class Agent extends User {
         this.code_agent = code_agent;
     }
 
+    public Set<Transaction> getTransactions() {
+        return transactions;
+    }
 
+    public void setTransactions(Set<Transaction> transactions) {
+        this.transactions = transactions;
+    }
+
+    public Agence getAgence() {
+        return agence;
+    }
+
+    public void setAgence(Agence agence) {
+        this.agence = agence;
+    }
 }
