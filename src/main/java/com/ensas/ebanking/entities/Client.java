@@ -3,8 +3,8 @@ package com.ensas.ebanking.entities;
 import com.ensas.ebanking.domains.User;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+
 import javax.persistence.*;
-import java.time.LocalDate;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;

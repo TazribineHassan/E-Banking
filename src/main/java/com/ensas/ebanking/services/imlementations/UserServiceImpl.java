@@ -3,7 +3,7 @@ package com.ensas.ebanking.services.imlementations;
 import com.ensas.ebanking.domains.User;
 import com.ensas.ebanking.domains.UserPrincipal;
 import com.ensas.ebanking.entities.Admin;
-import com.ensas.ebanking.entities.Banque;
+import com.ensas.ebanking.entities.Agence;
 import com.ensas.ebanking.exceptions.domain.EmailExistException;
 import com.ensas.ebanking.exceptions.domain.EmailNotFoundException;
 import com.ensas.ebanking.exceptions.domain.UserExistExistException;
@@ -88,29 +88,27 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     @Override
     public Admin register(String cin, String nom, String prenom, String username, String email, Date dob) throws UserNotFoundException, UserExistExistException, EmailExistException, MessagingException {
         validateNewUsernameAndEmail(StringUtils.EMPTY, username, email);
-        Banque banque = new Banque();
-        Admin admin = new Admin();
-        banque.setAdmin(admin);
-        banque.setNom("CIH BANQUE");
-        banque.setSolde(Integer.parseInt(RandomStringUtils.randomNumeric(5)));
+        Agence agence = new Agence();
+        agence.setNom("SAFI 2, Agence Zaouya");
+        Admin agent = new Admin();
+
         String password = generatePassword();
-        admin.setCin(cin);
-        admin.setNom(nom);
-        admin.setPrenom(prenom);
-        admin.setUsername(username);
-        admin.setEmail(email);
-        admin.setJoinDate(new Date());
-        admin.setBanque(banque);
-        admin.setPassword(encodePassword(password));
-        admin.setDate_naissance(dob);
-        admin.setActive(true);
-        admin.setNotLocked(true);
-        admin.setRoles(ROLE_ADMIN.name());
-        admin.setAuthorities(ROLE_ADMIN.getAuthorities());
+        agent.setCin(cin);
+        agent.setNom(nom);
+        agent.setPrenom(prenom);
+        agent.setUsername(username);
+        agent.setEmail(email);
+        agent.setJoinDate(new Date());
+        agent.setPassword(encodePassword(password));
+        agent.setDate_naissance(dob);
+        agent.setActive(true);
+        agent.setNotLocked(true);
+        agent.setRoles(ROLE_ADMIN.name());
+        agent.setAuthorities(ROLE_ADMIN.getAuthorities());
         //emailService.sendNewPasswordEmail(nom, password, email);
         logger.info("New user password: " + password);
-        this.userRepository.save(admin);
-        return admin;
+        this.userRepository.save(agent);
+        return agent;
     }
 
     @Override
