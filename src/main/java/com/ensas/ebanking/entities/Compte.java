@@ -14,7 +14,7 @@ public class Compte {
 
     private String num_compte;
 
-    private String solde;
+    private double solde;
 
     @JsonIgnore
     @OneToOne(mappedBy = "compte")
@@ -22,7 +22,7 @@ public class Compte {
 
     public Compte() { }
 
-    public Compte(Long id, String num_compte, String solde) {
+    public Compte(Long id, String num_compte, double solde) {
         this.id = id;
         this.num_compte = num_compte;
         this.solde = solde;
@@ -44,11 +44,11 @@ public class Compte {
         this.num_compte = num_compte;
     }
 
-    public String getSolde() {
+    public double getSolde() {
         return solde;
     }
 
-    public void setSolde(String solde) {
+    public void setSolde(double solde) {
         this.solde = solde;
     }
 
