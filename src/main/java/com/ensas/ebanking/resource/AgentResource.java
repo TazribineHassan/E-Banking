@@ -1,17 +1,21 @@
 package com.ensas.ebanking.resource;
 
 
+import com.ensas.ebanking.domains.User;
 import com.ensas.ebanking.domains.UserPrincipal;
+import com.ensas.ebanking.entities.Agent;
 import com.ensas.ebanking.entities.Client;
 import com.ensas.ebanking.entities.Compte;
 import com.ensas.ebanking.exceptions.domain.EmailExistException;
 import com.ensas.ebanking.exceptions.domain.UserExistExistException;
 import com.ensas.ebanking.exceptions.domain.UserNotFoundException;
+import com.ensas.ebanking.repositories.AgentRepository;
+import com.ensas.ebanking.services.AgentService;
 import com.ensas.ebanking.services.CompteService;
+import com.ensas.ebanking.services.UserService;
 import com.ensas.ebanking.services.imlementations.ClientServiceImpl;
 import com.ensas.ebanking.utilities.JWTokenProvider;
 import org.apache.commons.lang.RandomStringUtils;
-import org.apache.commons.lang.math.RandomUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
@@ -19,11 +23,12 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.web.bind.annotation.*;
+
+import java.security.Principal;
 import java.util.Date;
 
 import javax.mail.MessagingException;
 import java.util.List;
-import java.util.Random;
 
 import static com.ensas.ebanking.constant.SecurityConstant.JWT_TOKEN_HEADER;
 import static org.springframework.http.HttpStatus.OK;
@@ -37,15 +42,63 @@ public class AgentResource {
     private final AuthenticationManager authenticationManager;
     private final JWTokenProvider jwTokenProvider;
     private final CompteService compteService;
+    private final AgentService agentService;
 
     @Autowired
-    public AgentResource(ClientServiceImpl clientService, AuthenticationManager authenticationManager, JWTokenProvider jwTokenProvider, CompteService compteService) {
+    public AgentResource(ClientServiceImpl clientService, AuthenticationManager authenticationManager, JWTokenProvider jwTokenProvider, CompteService compteService, AgentService agentService) {
         this.clientService = clientService;
         this.authenticationManager = authenticationManager;
         this.jwTokenProvider = jwTokenProvider;
         this.compteService = compteService;
+        this.agentService = agentService;
     }
 
+    /*
+    *           THE ACCOUNT OF THE CURRENT AGENT
+    * */
+    @GetMapping("/account/details")
+    public ResponseEntity<Agent> getDetails(Principal principal){
+
+        String auth_username = principal.getName();
+        Agent currentAgent = agentService.findUserByUsername(auth_username);
+
+        return new ResponseEntity<Agent>(currentAgent, OK);
+    }
+
+    @PutMapping("/account/update")
+    public ResponseEntity<Agent> updateAccount(Principal principal,
+                                               @RequestParam String cin,
+                                               @RequestParam String code_agent,
+                                               @RequestParam String nom,
+                                               @RequestParam String prenom,
+                                               @RequestParam String email,
+                                               @RequestParam String num_tele,
+                                               @RequestParam String date_naissance,
+                                               @RequestParam String username,
+                                               @RequestParam boolean isActive ,
+                                               @RequestParam boolean isNotLocked ){
+
+        String auth_username = principal.getName();
+        Agent currentAgent = agentService.findUserByUsername(auth_username);
+        currentAgent.setCin(cin);
+        currentAgent.setCode_agent(code_agent);
+        currentAgent.setEmail(email);
+        currentAgent.setPrenom(prenom);
+        currentAgent.setNom(nom);
+        currentAgent.setUsername(username);
+        currentAgent.setNotLocked(isNotLocked);
+        currentAgent.setActive(isActive);
+        currentAgent.setDate_naissance(new Date(date_naissance));
+        currentAgent.setNum_tele(num_tele);
+
+        Agent updatedAgent = this.agentService.updateAgent(currentAgent);
+        return new ResponseEntity<>(updatedAgent, OK);
+    }
+
+
+    /*
+     *           CLIENTS MANAGEMENT
+     * */
     @GetMapping("/client/all")
     public ResponseEntity<List<Client>> test(){
         return new ResponseEntity<List<Client>>(this.clientService.getClients(), OK);
@@ -56,7 +109,7 @@ public class AgentResource {
                                             @RequestParam String nom,
                                             @RequestParam String prenom,
                                             @RequestParam String email,
-                                            @RequestParam String id_agence ) throws UserNotFoundException, UserExistExistException, EmailExistException, MessagingException {
+                                            @RequestParam int id_agence ) throws UserNotFoundException, UserExistExistException, EmailExistException, MessagingException {
 
         //add the client to database
         Client addedClient = this.clientService.addClient(cin, nom, prenom, email, id_agence);
@@ -81,10 +134,10 @@ public class AgentResource {
                                                @RequestParam String email,
                                                @RequestParam String type_client,
                                                @RequestParam String num_tele,
-                                               @RequestParam Date date_naissance,
-                                               @RequestParam Date lastLoginDate,
-                                               @RequestParam Date lastLoginDateDisplay,
-                                               @RequestParam Date joinDate,
+                                               @RequestParam String date_naissance,
+                                               @RequestParam String lastLoginDate,
+                                               @RequestParam String lastLoginDateDisplay,
+                                               @RequestParam String joinDate,
                                                @RequestParam String username,
                                                @RequestParam boolean isActive ,
                                                @RequestParam boolean isNotLocked ){
@@ -97,10 +150,10 @@ public class AgentResource {
         client.setUsername(username);
         client.setNotLocked(isNotLocked);
         client.setActive(isActive);
-        client.setJoinDate(joinDate);
-        client.setDate_naissance(date_naissance);
-        client.setLastLoginDate(lastLoginDate);
-        client.setLastLoginDateDisplay(lastLoginDateDisplay);
+        client.setJoinDate(new Date(joinDate));
+        client.setDate_naissance(new Date(date_naissance));
+        client.setLastLoginDate(new Date(lastLoginDate));
+        client.setLastLoginDateDisplay(new Date(lastLoginDateDisplay));
         client.setNum_tele(num_tele);
 
         Client updatedClient = this.clientService.updateClient(client);

@@ -14,7 +14,7 @@ public interface ClientService {
                             String nom,
                             String prenom,
                             String email,
-                            String id_agence) throws UserNotFoundException, UserExistExistException, EmailExistException, MessagingException;
+                            int id_agence) throws UserNotFoundException, UserExistExistException, EmailExistException, MessagingException;
     public Client updateClient(Client client);
     public Client terminateClient(int client_id);
     public Client getClientByID(int id);

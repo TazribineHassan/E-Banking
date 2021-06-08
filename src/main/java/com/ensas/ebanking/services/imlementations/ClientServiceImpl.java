@@ -1,10 +1,12 @@
 package com.ensas.ebanking.services.imlementations;
 
 import com.ensas.ebanking.domains.User;
+import com.ensas.ebanking.entities.Agence;
 import com.ensas.ebanking.entities.Client;
 import com.ensas.ebanking.exceptions.domain.EmailExistException;
 import com.ensas.ebanking.exceptions.domain.UserExistExistException;
 import com.ensas.ebanking.exceptions.domain.UserNotFoundException;
+import com.ensas.ebanking.repositories.AgenceRepository;
 import com.ensas.ebanking.repositories.ClientRepository;
 import com.ensas.ebanking.services.ClientService;
 import com.ensas.ebanking.services.EmailService;
@@ -29,12 +31,14 @@ public class ClientServiceImpl implements ClientService {
 
     private final ClientRepository clientRepository;
     private final PasswordEncoder passwordEncoder;
+    private final AgenceRepository agenceRepository;
     private EmailService emailService;
     private Logger logger = LoggerFactory.getLogger(getClass());
 
-    public ClientServiceImpl(ClientRepository clientRepository, PasswordEncoder passwordEncoder, EmailService emailService) {
+    public ClientServiceImpl(ClientRepository clientRepository, PasswordEncoder passwordEncoder, AgenceRepository agenceRepository, EmailService emailService) {
         this.clientRepository = clientRepository;
         this.passwordEncoder = passwordEncoder;
+        this.agenceRepository = agenceRepository;
         this.emailService = emailService;
     }
 
@@ -48,14 +52,14 @@ public class ClientServiceImpl implements ClientService {
                             String nom,
                             String prenom,
                             String email,
-                            String id_agence) throws UserNotFoundException, UserExistExistException, EmailExistException, MessagingException {
+                            int id_agence) throws UserNotFoundException, UserExistExistException, EmailExistException, MessagingException {
 
         String username = generateUsername();
         String password = generatePassword();
         logger.info("the new client got the username: " + username + " password: " + password);
 
         //get the current agency
-
+        Agence agence = this.agenceRepository.findById(id_agence).get();
 
         // create new client
         Client client = new Client();
@@ -71,6 +75,7 @@ public class ClientServiceImpl implements ClientService {
         client.setPassword(encodePassword(password));
         client.setRoles(ROLE_CLIENT.name());
         client.setAuthorities(ROLE_CLIENT.getAuthorities());
+        client.setAgence(agence);
 
         //validate the new client before  saving to database
         validateNewUsernameAndEmail(StringUtils.EMPTY, username, client.getEmail());
@@ -79,7 +84,13 @@ public class ClientServiceImpl implements ClientService {
         //emailService.sendNewPasswordEmail(nom + " " + prenom, username, password, email);
 
         //save client to database
-        return this.clientRepository.save(client);
+        Client addedClient = this.clientRepository.save(client);
+
+        //add client to agence
+        agence.getClients().add(addedClient);
+        agenceRepository.save(agence);
+
+        return addedClient;
     }
 
     @Override

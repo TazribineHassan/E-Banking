@@ -23,4 +23,19 @@ public class AgentServiceImpl implements AgentService {
     public Agent addAgent(Agent agent) {
         return agentRepository.save(agent);
     }
+
+    @Override
+    public Agent findUserByUsername(String username) {
+        return (Agent) this.agentRepository.findUserByUsername(username);
+    }
+
+    @Override
+    public Agent findAgentByID(int id) {
+        return this.agentRepository.findById(id).get();
+    }
+
+    @Override
+    public Agent updateAgent(Agent agent) {
+        return this.agentRepository.save(agent);
+    }
 }
