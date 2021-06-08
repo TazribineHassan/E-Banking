@@ -41,7 +41,6 @@ public class ClientServiceImpl implements ClientService {
         this.agenceRepository = agenceRepository;
         this.emailService = emailService;
     }
-
     @Override
     public List<Client> getClients() {
         return (List<Client>) clientRepository.findAll();

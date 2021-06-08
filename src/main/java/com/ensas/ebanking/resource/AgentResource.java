@@ -35,7 +35,7 @@ import static org.springframework.http.HttpStatus.OK;
 
 @RestController
 @RequestMapping(path= {"/agent"})
-@PreAuthorize("hasAnyAuthority('manage_clients')")
+//@PreAuthorize("hasAnyAuthority('manage_clients')")
 public class AgentResource {
 
     private final ClientServiceImpl clientService;
