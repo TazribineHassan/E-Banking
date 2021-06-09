@@ -75,7 +75,7 @@ public class ClientServiceImpl implements ClientService {
         Client client = new Client();
         // create new bank account for the new client
         Compte compte = new Compte();
-        compte.setNum_compte(RandomStringUtils.randomNumeric(14));
+        compte.setNumCompte(RandomStringUtils.randomNumeric(14));
         compte.setSolde(0);
 
 
