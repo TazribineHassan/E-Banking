@@ -54,6 +54,8 @@ public class DbTest {
         agent.setNom("agent 2");
         agent.setPrenom("agent 2");
         agent.setAgence(newAgence);
+        agent.setActive(true);
+        agent.setNotLocked(true);
         agentService.addAgent(agent);
 
         return new ResponseEntity<Object>(null, HttpStatus.OK);

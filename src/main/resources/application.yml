@@ -9,7 +9,7 @@ spring:
   datasource:
     url: jdbc:mysql://localhost:3306/ebanking
     password:
-    username: root
+    username: mohamed
   jpa:
     show-sql: true
     hibernate:

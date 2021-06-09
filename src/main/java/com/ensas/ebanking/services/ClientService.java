@@ -6,6 +6,7 @@ import com.ensas.ebanking.exceptions.domain.UserExistExistException;
 import com.ensas.ebanking.exceptions.domain.UserNotFoundException;
 
 import javax.mail.MessagingException;
+import java.util.Date;
 import java.util.List;
 
 public interface ClientService {
@@ -14,8 +15,10 @@ public interface ClientService {
                             String nom,
                             String prenom,
                             String email,
-                            int id_agence) throws UserNotFoundException, UserExistExistException, EmailExistException, MessagingException;
-    public Client updateClient(Client client);
+                            String num_tele,
+                            Date date_naissance,
+                            Long id_agence) throws UserNotFoundException, UserExistExistException, EmailExistException, MessagingException;
+    public Client updateClient(String current_username, Client new_client) throws UserNotFoundException, UserExistExistException, EmailExistException;
     public Client terminateClient(int client_id);
-    public Client getClientByID(int id);
+    public Client getClientByID(Long id);
 }

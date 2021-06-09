@@ -16,6 +16,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.mail.MessagingException;
 import javax.transaction.Transactional;
@@ -51,11 +52,12 @@ public class ClientServiceImpl implements ClientService {
                             String nom,
                             String prenom,
                             String email,
-                            int id_agence) throws UserNotFoundException, UserExistExistException, EmailExistException, MessagingException {
+                            String num_tele,
+                            Date date_naissance,
+                            Long id_agence) throws UserNotFoundException, UserExistExistException, EmailExistException, MessagingException {
 
         String username = generateUsername();
         String password = generatePassword();
-        logger.info("the new client got the username: " + username + " password: " + password);
 
         //get the current agency
         Agence agence = this.agenceRepository.findById(id_agence).get();
@@ -66,6 +68,8 @@ public class ClientServiceImpl implements ClientService {
         client.setPrenom(prenom);
         client.setCin(cin);
         client.setEmail(email);
+        client.setDate_naissance(date_naissance);
+        client.setNum_tele(num_tele);
         client.setUsername(username);
         client.setJoinDate(new Date());
         client.setType_client("individuel");
@@ -89,12 +93,16 @@ public class ClientServiceImpl implements ClientService {
         agence.getClients().add(addedClient);
         agenceRepository.save(agence);
 
+        //Log the username and password
+        logger.info("the new client got the username: " + username + " password: " + password);
+
         return addedClient;
     }
 
     @Override
-    public Client updateClient(Client client) {
-        return this.clientRepository.save(client);
+    public Client updateClient(String current_username, Client new_client) throws UserNotFoundException, UserExistExistException, EmailExistException {
+        validateNewUsernameAndEmail(current_username, new_client.getUsername(), new_client.getEmail());
+        return this.clientRepository.save(new_client);
     }
 
     @Override
@@ -128,10 +136,10 @@ public class ClientServiceImpl implements ClientService {
             if(currentUser == null){
                 throw new UserNotFoundException(NO_USER_FOUND_BY_USERNAME +  currentUsername);
             }
-            if(userByUsername != null && !(currentUser.getId() + "").equals(userByUsername.getId())){
+            if(userByUsername != null && !(currentUser.getId() + "").equals(userByUsername.getId() + "")){
                 throw new UserExistExistException(USERNAME_IS_ALREADY_EXIST);
             }
-            if(userByEmail != null && !(currentUser.getId() + "").equals(userByEmail.getId())){
+            if(userByEmail != null && !(currentUser.getId() + "").equals(userByEmail.getId() + "")){
                 throw new EmailExistException(EMAIL_IS_ALREADY_EXIST);
             }
             return currentUser;
@@ -148,7 +156,7 @@ public class ClientServiceImpl implements ClientService {
     }
 
     @Override
-    public Client getClientByID(int id) {
-        return this.clientRepository.findById(id).get();
+    public Client getClientByID(Long id) {
+        return this.clientRepository.findById(Math.toIntExact(id)).get();
     }
 }
