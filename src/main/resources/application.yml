@@ -1,4 +1,3 @@
-# MySql Configuration
 jwt:
   secret: 'FXjG[>tR5p}jclOt#h}h~l<;u9..[/r*D|&gdqDmzDZ9I!EEe7Cz/c"cpTibR5'
 
@@ -9,7 +8,7 @@ spring:
   datasource:
     url: jdbc:mysql://localhost:3306/ebanking
     password:
-    username: mohamed
+    username: root
   jpa:
     show-sql: true
     hibernate:

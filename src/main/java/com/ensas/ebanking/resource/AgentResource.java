@@ -1,6 +1,8 @@
 package com.ensas.ebanking.resource;
 
 
+import com.ensas.ebanking.domains.HttpResponse;
+import com.ensas.ebanking.domains.User;
 import com.ensas.ebanking.domains.UserPrincipal;
 import com.ensas.ebanking.entities.*;
 import com.ensas.ebanking.exceptions.domain.AccountNotFoundException;
@@ -16,6 +18,7 @@ import org.apache.commons.lang.RandomStringUtils;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -34,6 +37,7 @@ import java.util.List;
 import java.util.Locale;
 
 import static com.ensas.ebanking.constant.SecurityConstant.JWT_TOKEN_HEADER;
+import static org.springframework.http.HttpStatus.NO_CONTENT;
 import static org.springframework.http.HttpStatus.OK;
 
 @RestController
@@ -41,6 +45,7 @@ import static org.springframework.http.HttpStatus.OK;
 @PreAuthorize("hasAnyAuthority('manage_clients')")
 public class AgentResource {
 
+    private static final String USER_BLOCKED_SUCCESSFULLY = "Le compte bloqué avec succès";
     private final ClientServiceImpl clientService;
     private final AuthenticationManager authenticationManager;
     private final JWTokenProvider jwTokenProvider;
@@ -116,65 +121,37 @@ public class AgentResource {
                                             @RequestParam(name = "email") String email,
                                             @RequestParam(name = "num_tele") String num_tele,
                                             @RequestParam(name = "date_naissance") String date_naissance,
-                                            @RequestParam(name = "id_agence") Long id_agence ) throws UserNotFoundException, UserExistExistException, EmailExistException, MessagingException {
+                                            @RequestParam(name = "id_agence") Long id_agence ) throws UserNotFoundException, UserExistExistException, EmailExistException, MessagingException, ParseException {
 
+        DateFormat format = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH);
         //add the client to database
-        Client addedClient = this.clientService.addClient(cin, nom, prenom, email, num_tele, new Date(date_naissance), id_agence);
+        Client addedClient = this.clientService.addClient(cin, nom, prenom, email, num_tele, format.parse(date_naissance), id_agence);
 
-        // create new bank account for the new client
-        Compte compte = new Compte();
-        compte.setNumCompte(RandomStringUtils.randomNumeric(14));
-        compte.setClient(addedClient);
-        compte.setSolde(0);
-        Compte addedCompte = this.compteService.addCompte(compte);
-        addedClient.setCompte(addedCompte);
-        this.clientService.updateClient(StringUtils.EMPTY, addedClient);
-
+        //this.clientService.updateClient(StringUtils.EMPTY, addedClient);
         return new ResponseEntity<>(addedClient, OK);
     }
 
     @PutMapping("/client/update")
-    public ResponseEntity<Client> updateClient(@RequestParam(name = "id") Long id,
+    public ResponseEntity<Client> updateClient(@RequestParam("username") String username,
                                                @RequestParam(name = "cin") String cin,
                                                @RequestParam(name = "nom") String nom,
                                                @RequestParam(name = "prenom") String prenom,
                                                @RequestParam(name = "email") String email,
-                                               @RequestParam(name = "type_client") String type_client,
                                                @RequestParam(name = "num_tele") String num_tele,
                                                @RequestParam(name = "date_naissance") String date_naissance,
-                                               @RequestParam(name = "lastLoginDate") String lastLoginDate,
-                                               @RequestParam(name = "lastLoginDateDisplay") String lastLoginDateDisplay,
-                                               @RequestParam(name = "joinDate") String joinDate,
-                                               @RequestParam(name = "username") String username,
-                                               @RequestParam(name = "isActive") String isActive ,
-                                               @RequestParam(name = "isNotLocked") String isNotLocked ) throws UserNotFoundException, UserExistExistException, EmailExistException, ParseException {
+                                               @RequestParam(name = "isActive") String isActive) throws UserNotFoundException, UserExistExistException, EmailExistException, ParseException {
 
-        DateFormat format = new SimpleDateFormat("dd/MM/yyyy", Locale.ENGLISH);
+        DateFormat format = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH);
 
-        Client client = clientService.getClientByID(id);
-        String current_username = client.getUsername();
-        client.setCin(cin);
-        client.setEmail(email);
-        client.setPrenom(prenom);
-        client.setNom(nom);
-        client.setType_client(type_client);
-        client.setUsername(username);
-        client.setNotLocked(Boolean.parseBoolean(isNotLocked));
-        client.setActive(Boolean.parseBoolean(isActive));
-        client.setJoinDate(format.parse(joinDate));
-        client.setDate_naissance(format.parse(date_naissance));
-        client.setLastLoginDate(format.parse(lastLoginDate));
-        client.setLastLoginDateDisplay(format.parse(lastLoginDateDisplay));
-        client.setNum_tele(num_tele);
+        Client updatedClient = clientService.updateClient(username, cin, nom, prenom, email, num_tele, format.parse(date_naissance), Boolean.parseBoolean(isActive));
 
-        Client updatedClient = this.clientService.updateClient(current_username, client);
         return new ResponseEntity<>(updatedClient, OK);
     }
 
     @PutMapping("/client/terminate/{id}")
-    public ResponseEntity<Client> terminateClient(@PathVariable int id){
+    public ResponseEntity<HttpResponse> terminateClient(@PathVariable int id){
         Client terminatedClient = this.clientService.terminateClient(id);
-        return new ResponseEntity<>(terminatedClient, OK);
+        return  response(OK, USER_BLOCKED_SUCCESSFULLY);
     }
 
     private void authentication(String username, String password) {
@@ -185,5 +162,8 @@ public class AgentResource {
         HttpHeaders headers = new HttpHeaders();
         headers.add(JWT_TOKEN_HEADER, jwTokenProvider.generateJwtToken(userPrincipal));
         return headers;
+    }
+    private ResponseEntity<HttpResponse> response(HttpStatus status, String msg) {
+        return new ResponseEntity<>(new HttpResponse(status.value(), status, status.getReasonPhrase(), msg), status);
     }
 }
