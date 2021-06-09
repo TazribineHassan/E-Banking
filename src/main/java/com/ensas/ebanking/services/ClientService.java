@@ -18,7 +18,14 @@ public interface ClientService {
                             String num_tele,
                             Date date_naissance,
                             Long id_agence) throws UserNotFoundException, UserExistExistException, EmailExistException, MessagingException;
-    public Client updateClient(String current_username, Client new_client) throws UserNotFoundException, UserExistExistException, EmailExistException;
+    public Client updateClient(String username,
+                               String cin,
+                               String nom,
+                               String prenom,
+                               String email,
+                               String num_tele,
+                               Date date_naissance,
+                               boolean isActive) throws UserNotFoundException, UserExistExistException, EmailExistException;
     public Client terminateClient(int client_id);
     public Client getClientByID(Long id);
 }

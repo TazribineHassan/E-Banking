@@ -3,17 +3,20 @@ package com.ensas.ebanking.services.imlementations;
 import com.ensas.ebanking.domains.User;
 import com.ensas.ebanking.entities.Agence;
 import com.ensas.ebanking.entities.Client;
+import com.ensas.ebanking.entities.Compte;
 import com.ensas.ebanking.exceptions.domain.EmailExistException;
 import com.ensas.ebanking.exceptions.domain.UserExistExistException;
 import com.ensas.ebanking.exceptions.domain.UserNotFoundException;
 import com.ensas.ebanking.repositories.AgenceRepository;
 import com.ensas.ebanking.repositories.ClientRepository;
+import com.ensas.ebanking.repositories.UserRepository;
 import com.ensas.ebanking.services.ClientService;
 import com.ensas.ebanking.services.EmailService;
 import org.apache.commons.lang.RandomStringUtils;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -33,14 +36,17 @@ public class ClientServiceImpl implements ClientService {
     private final ClientRepository clientRepository;
     private final PasswordEncoder passwordEncoder;
     private final AgenceRepository agenceRepository;
+    private UserRepository userRepository;
     private EmailService emailService;
     private Logger logger = LoggerFactory.getLogger(getClass());
 
-    public ClientServiceImpl(ClientRepository clientRepository, PasswordEncoder passwordEncoder, AgenceRepository agenceRepository, EmailService emailService) {
+    @Autowired
+    public ClientServiceImpl(ClientRepository clientRepository, PasswordEncoder passwordEncoder, AgenceRepository agenceRepository, EmailService emailService, UserRepository userRepository) {
         this.clientRepository = clientRepository;
         this.passwordEncoder = passwordEncoder;
         this.agenceRepository = agenceRepository;
         this.emailService = emailService;
+        this.userRepository = userRepository;
     }
     @Override
     public List<Client> getClients() {
@@ -59,11 +65,20 @@ public class ClientServiceImpl implements ClientService {
         String username = generateUsername();
         String password = generatePassword();
 
+        //validate the new client before  saving to database
+        validateNewUsernameAndEmail(StringUtils.EMPTY, username, email);
+
         //get the current agency
         Agence agence = this.agenceRepository.findById(id_agence).get();
 
         // create new client
         Client client = new Client();
+        // create new bank account for the new client
+        Compte compte = new Compte();
+        compte.setNum_compte(RandomStringUtils.randomNumeric(14));
+        compte.setSolde(0);
+
+
         client.setNom(nom);
         client.setPrenom(prenom);
         client.setCin(cin);
@@ -72,6 +87,7 @@ public class ClientServiceImpl implements ClientService {
         client.setNum_tele(num_tele);
         client.setUsername(username);
         client.setJoinDate(new Date());
+        client.setCompte(compte);
         client.setType_client("individuel");
         client.setActive(true);
         client.setNotLocked(true);
@@ -79,9 +95,6 @@ public class ClientServiceImpl implements ClientService {
         client.setRoles(ROLE_CLIENT.name());
         client.setAuthorities(ROLE_CLIENT.getAuthorities());
         client.setAgence(agence);
-
-        //validate the new client before  saving to database
-        validateNewUsernameAndEmail(StringUtils.EMPTY, username, client.getEmail());
 
         //send user and password in the email to the client
         //emailService.sendNewPasswordEmail(nom + " " + prenom, username, password, email);
@@ -100,25 +113,39 @@ public class ClientServiceImpl implements ClientService {
     }
 
     @Override
-    public Client updateClient(String current_username, Client new_client) throws UserNotFoundException, UserExistExistException, EmailExistException {
-        validateNewUsernameAndEmail(current_username, new_client.getUsername(), new_client.getEmail());
-        return this.clientRepository.save(new_client);
+    public Client updateClient(String username,
+                               String cin,
+                               String nom,
+                               String prenom,
+                               String email,
+                               String num_tele,
+                               Date date_naissance,
+                               boolean isActive) throws UserNotFoundException, UserExistExistException, EmailExistException {
+        Client client = (Client) clientRepository.findUserByUsername(username);
+        client.setCin(cin);
+        client.setNom(nom);
+        client.setPrenom(prenom);
+        client.setEmail(email);
+        client.setNum_tele(num_tele);
+        client.setDate_naissance(date_naissance);
+        client.setActive(isActive);
+
+        return (Client) this.userRepository.save(client);
     }
 
     @Override
     public Client terminateClient(int client_id) {
         Client client = clientRepository.findById(client_id).get();
         client.setActive(false);
-        client.setNotLocked(false);
         return this.clientRepository.save(client);
     }
 
     private String generateUsername() {
-        return RandomStringUtils.randomAlphabetic(8);
+        return RandomStringUtils.randomNumeric(8);
     }
 
     private String generatePassword() {
-        return RandomStringUtils.randomAlphanumeric(8);
+        return RandomStringUtils.randomNumeric(6);
     }
 
     private String encodePassword(String password) {
