@@ -5,5 +5,5 @@ import com.ensas.ebanking.entities.Compte;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface CompteRepository extends JpaRepository<Compte,Integer> {
-
+    public Compte findCompteByNumCompte(String num_compte);
 }

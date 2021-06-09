@@ -12,7 +12,7 @@ public class Compte {
     @Column(nullable = false, updatable = false)
     private Long id;
 
-    private String num_compte;
+    private String numCompte;
 
     private double solde;
 
@@ -24,7 +24,7 @@ public class Compte {
 
     public Compte(Long id, String num_compte, double solde) {
         this.id = id;
-        this.num_compte = num_compte;
+        this.numCompte = num_compte;
         this.solde = solde;
     }
 
@@ -36,12 +36,12 @@ public class Compte {
         this.id = id;
     }
 
-    public String getNum_compte() {
-        return num_compte;
+    public String getNumCompte() {
+        return numCompte;
     }
 
-    public void setNum_compte(String num_compte) {
-        this.num_compte = num_compte;
+    public void setNumCompte(String num_compte) {
+        this.numCompte = num_compte;
     }
 
     public double getSolde() {

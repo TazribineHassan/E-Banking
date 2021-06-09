@@ -22,4 +22,14 @@ public class CompteServiceImpl implements CompteService {
     public Compte addCompte(Compte compte) {
         return compteRepository.save(compte);
     }
+
+    @Override
+    public Compte findComptByNum(String num_compte) {
+        return compteRepository.findCompteByNumCompte(num_compte);
+    }
+
+    @Override
+    public Compte updateCompte(Compte compte) {
+        return compteRepository.save(compte);
+    }
 }

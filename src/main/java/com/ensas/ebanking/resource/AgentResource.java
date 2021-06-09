@@ -1,18 +1,15 @@
 package com.ensas.ebanking.resource;
 
 
-import com.ensas.ebanking.domains.User;
 import com.ensas.ebanking.domains.UserPrincipal;
-import com.ensas.ebanking.entities.Agent;
-import com.ensas.ebanking.entities.Client;
-import com.ensas.ebanking.entities.Compte;
+import com.ensas.ebanking.entities.*;
+import com.ensas.ebanking.exceptions.domain.AccountNotFoundException;
 import com.ensas.ebanking.exceptions.domain.EmailExistException;
 import com.ensas.ebanking.exceptions.domain.UserExistExistException;
 import com.ensas.ebanking.exceptions.domain.UserNotFoundException;
-import com.ensas.ebanking.repositories.AgentRepository;
 import com.ensas.ebanking.services.AgentService;
 import com.ensas.ebanking.services.CompteService;
-import com.ensas.ebanking.services.UserService;
+import com.ensas.ebanking.services.VersementService;
 import com.ensas.ebanking.services.imlementations.ClientServiceImpl;
 import com.ensas.ebanking.utilities.JWTokenProvider;
 import org.apache.commons.lang.RandomStringUtils;
@@ -29,6 +26,7 @@ import java.security.Principal;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 
 import javax.mail.MessagingException;
@@ -40,7 +38,7 @@ import static org.springframework.http.HttpStatus.OK;
 
 @RestController
 @RequestMapping(path= {"/agent"})
-//@PreAuthorize("hasAnyAuthority('manage_clients')")
+@PreAuthorize("hasAnyAuthority('manage_clients')")
 public class AgentResource {
 
     private final ClientServiceImpl clientService;
@@ -48,57 +46,55 @@ public class AgentResource {
     private final JWTokenProvider jwTokenProvider;
     private final CompteService compteService;
     private final AgentService agentService;
+    private final VersementService versementService;
+
 
     @Autowired
-    public AgentResource(ClientServiceImpl clientService, AuthenticationManager authenticationManager, JWTokenProvider jwTokenProvider, CompteService compteService, AgentService agentService) {
+    public AgentResource(ClientServiceImpl clientService,
+                         AuthenticationManager authenticationManager,
+                         JWTokenProvider jwTokenProvider,
+                         CompteService compteService,
+                         AgentService agentService,
+                         VersementService versementService) {
         this.clientService = clientService;
         this.authenticationManager = authenticationManager;
         this.jwTokenProvider = jwTokenProvider;
         this.compteService = compteService;
         this.agentService = agentService;
+        this.versementService = versementService;
     }
 
     /*
-    *           THE ACCOUNT OF THE CURRENT AGENT
+    *           TRANSACTION MANAGEMENT
     * */
-    @GetMapping("/account/details")
-    public ResponseEntity<Agent> getDetails(Principal principal){
+    @GetMapping("/transaction/all")
+    public ResponseEntity<List<Transaction>> getAllTransactions(Principal principal){
 
         String auth_username = principal.getName();
         Agent currentAgent = agentService.findUserByUsername(auth_username);
-
-        return new ResponseEntity<Agent>(currentAgent, OK);
+        List<Transaction> transactions = new ArrayList<>(currentAgent.getTransactions());
+        return new ResponseEntity<>(transactions, OK);
     }
 
-    @PutMapping("/account/update")
-    public ResponseEntity<Agent> updateAccount(Principal principal,
-                                               @RequestParam(name = "cin") String cin,
-                                               @RequestParam(name = "code_agent") String code_agent,
-                                               @RequestParam(name = "nom") String nom,
-                                               @RequestParam(name = "prenom") String prenom,
-                                               @RequestParam(name = "email") String email,
-                                               @RequestParam(name = "num_tele") String num_tele,
-                                               @RequestParam(name = "date_naissance") String date_naissance,
-                                               @RequestParam(name = "username") String username,
-                                               @RequestParam(name = "isActive") boolean isActive ,
-                                               @RequestParam(name = "isNotLocked") boolean isNotLocked ) throws UserNotFoundException, UserExistExistException, EmailExistException {
+    @PostMapping("/transaction/make")
+    public ResponseEntity<Transaction> makeVersement(Principal principal,
+                                               @RequestParam(name = "nom_verseur") String nom_verseur,
+                                               @RequestParam(name = "CIN_verseur") String CIN_verseur,
+                                               @RequestParam(name = "num_compte_beneficiaire") String num_compte_beneficiaire,
+                                               @RequestParam(name = "Montant_versement") double Montant_versement ) throws UserNotFoundException, UserExistExistException, EmailExistException, AccountNotFoundException {
 
         String auth_username = principal.getName();
         Agent currentAgent = agentService.findUserByUsername(auth_username);
-        String current_username = currentAgent.getUsername();
-        currentAgent.setCin(cin);
-        currentAgent.setCode_agent(code_agent);
-        currentAgent.setEmail(email);
-        currentAgent.setPrenom(prenom);
-        currentAgent.setNom(nom);
-        currentAgent.setUsername(username);
-        currentAgent.setNotLocked(isNotLocked);
-        currentAgent.setActive(isActive);
-        currentAgent.setDate_naissance(new Date(date_naissance));
-        currentAgent.setNum_tele(num_tele);
+        if (currentAgent == null)
+            throw  new UserNotFoundException("agent couldn't be found");
 
-        Agent updatedAgent = this.agentService.updateAgent(current_username, currentAgent);
-        return new ResponseEntity<>(updatedAgent, OK);
+        Transaction transaction = versementService.addVersement(nom_verseur,
+                                                                CIN_verseur,
+                                                                Montant_versement,
+                                                                num_compte_beneficiaire,
+                                                                currentAgent);
+
+        return new ResponseEntity<>(transaction, OK);
     }
 
 
@@ -106,8 +102,11 @@ public class AgentResource {
      *           CLIENTS MANAGEMENT
      * */
     @GetMapping("/client/all")
-    public ResponseEntity<List<Client>> getAllClients(){
-        return new ResponseEntity<List<Client>>(this.clientService.getClients(), OK);
+    public ResponseEntity<List<Client>> getAllClients(Principal principal){
+        String auth_username = principal.getName();
+        Agent currentAgent = agentService.findUserByUsername(auth_username);
+        List<Client> clients = new ArrayList<Client>(currentAgent.getAgence().getClients());
+        return new ResponseEntity<List<Client>>(clients, OK);
     }
 
     @PostMapping("/client/add")
@@ -124,7 +123,7 @@ public class AgentResource {
 
         // create new bank account for the new client
         Compte compte = new Compte();
-        compte.setNum_compte(RandomStringUtils.randomNumeric(14));
+        compte.setNumCompte(RandomStringUtils.randomNumeric(14));
         compte.setClient(addedClient);
         compte.setSolde(0);
         Compte addedCompte = this.compteService.addCompte(compte);
