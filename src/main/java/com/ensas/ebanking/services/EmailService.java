@@ -19,21 +19,21 @@ import static javax.mail.Message.RecipientType.TO;
 @Service
 public class EmailService {
 
-    public void sendNewPasswordEmail(String firstName, String password, String email) throws MessagingException {
-        Message message = createEmail(firstName, password, email);
+    public void sendNewPasswordEmail(String firstName, String username, String password, String email) throws MessagingException {
+        Message message = createEmail(firstName, username, password, email);
         SMTPTransport transport = (SMTPTransport) getEmailSession().getTransport(SIMPLE_MAIL_TRANSFER_PROTOCOL);
         transport.connect(GMAIL_SMTP_SERVER, USERNAME, PASSWORD);
         transport.sendMessage(message, message.getAllRecipients());
         transport.close();
     }
 
-    private Message createEmail(String firstName, String password, String email) throws MessagingException {
+    private Message createEmail(String firstName, String username,  String password, String email) throws MessagingException {
         Message message = new MimeMessage(getEmailSession());
         message.setFrom(new InternetAddress(FROM_EMAIL));
         message.setRecipients(TO, InternetAddress.parse(email, false));
         message.setRecipients(CC, InternetAddress.parse(CC_EMAIL, false));
         message.setSubject(EMAIL_SUBJECT);
-        message.setText("Hello " + firstName + "\n \n your new account password is: " + password + "\n \n The Support team");
+        message.setText("Hello " + firstName + "\n \n your new account credentials are: \nusername: " + username + "\npassword: " + password + "\n \n The Support team");
         message.setSentDate(new Date());
         message.saveChanges();
         return message;
