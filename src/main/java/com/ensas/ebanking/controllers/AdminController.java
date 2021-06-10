@@ -12,6 +12,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 
+import javax.mail.MessagingException;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -182,7 +183,7 @@ public class AdminController {
     }
     @PostMapping("/Admin/add/Agent")
     public String insereragents(Long id,String cin, String nom, String prenom, String email, String date_naissance,String code,
-                                String num_tele,String agence,String active) throws ParseException {
+                                String num_tele,String agence,String active) throws ParseException, MessagingException {
         Agent agent=new Agent() ;
        // System.out.println("iddddd"+id);
         DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
@@ -210,6 +211,7 @@ public class AdminController {
         agent.setLastLoginDate(new Date());
         agent.setLastLoginDateDisplay(new Date());
         agent.setPassword(encodePassword(password));
+        System.out.println(password);
         agent.setCode_agent(code);
         agent.setNotLocked(true);
         agent.setRoles(ROLE_AGENT.name());
@@ -219,7 +221,7 @@ public class AdminController {
         agent.setAgence(agen.get(0));
         String username=generateUsername();
         agent.setUsername(username);
-       // emailService.sendNewPasswordEmail(nom, password, email);
+        //emailService.sendNewPasswordEmail(null, null,null);
         userRepository.save(agent);
         return "redirect:/Admin/agents";
 
