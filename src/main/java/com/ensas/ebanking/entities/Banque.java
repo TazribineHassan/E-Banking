@@ -16,7 +16,7 @@ public class Banque {
 
     private String nom;
 
-    private float solde;
+    private double solde;
 
     //foreign keys
     @JsonIgnore
@@ -53,11 +53,11 @@ public class Banque {
         this.nom = nom;
     }
 
-    public float getSolde() {
+    public double getSolde() {
         return solde;
     }
 
-    public void setSolde(float solde) {
+    public void setSolde(double solde) {
         this.solde = solde;
     }
 

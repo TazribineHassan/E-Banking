@@ -13,7 +13,6 @@ import com.ensas.ebanking.services.UserService;
 import com.ensas.ebanking.utilities.JWTokenProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -22,6 +21,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.mail.MessagingException;
 
 import java.util.Date;
+import java.util.List;
 
 import static com.ensas.ebanking.constant.SecurityConstant.JWT_TOKEN_HEADER;
 import static org.springframework.http.HttpStatus.OK;
@@ -54,6 +54,13 @@ public class UserResource extends ExceptionHandling {
         UserPrincipal userPrincipal = new UserPrincipal(loginUser);
         HttpHeaders jwtHeader = getJwtHeader(userPrincipal);
         return new ResponseEntity<>(loginUser, jwtHeader, OK);
+    }
+
+    @GetMapping("/list")
+    public ResponseEntity<List<User>>  listUsers(){
+
+        List<User> list = userService.getUsers();
+        return new ResponseEntity<>(list, OK);
     }
 
     private void authentication(String username, String password) {

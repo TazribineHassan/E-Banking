@@ -19,21 +19,42 @@ import static javax.mail.Message.RecipientType.TO;
 @Service
 public class EmailService {
 
-    public void sendNewPasswordEmail(String firstName, String password, String email) throws MessagingException {
-        Message message = createEmail(firstName, password, email);
+    public void sendNewPasswordEmail(String firstName, String username, String password, String email) throws MessagingException {
+        Message message = createEmail(firstName, username, password, email);
         SMTPTransport transport = (SMTPTransport) getEmailSession().getTransport(SIMPLE_MAIL_TRANSFER_PROTOCOL);
         transport.connect(GMAIL_SMTP_SERVER, USERNAME, PASSWORD);
         transport.sendMessage(message, message.getAllRecipients());
         transport.close();
     }
 
-    private Message createEmail(String firstName, String password, String email) throws MessagingException {
+    public void sendFoundRecievedEmail(String firstName, double amount, String email) throws MessagingException {
+        String text = "Hello " + firstName + "\n \n account account has recieved : " + amount + " Dh\n \n The Support team";
+        Message message = createEmail(text, email);
+        SMTPTransport transport = (SMTPTransport) getEmailSession().getTransport(SIMPLE_MAIL_TRANSFER_PROTOCOL);
+        transport.connect(GMAIL_SMTP_SERVER, USERNAME, PASSWORD);
+        transport.sendMessage(message, message.getAllRecipients());
+        transport.close();
+    }
+
+    private Message createEmail(String firstName, String username,  String password, String email) throws MessagingException {
         Message message = new MimeMessage(getEmailSession());
         message.setFrom(new InternetAddress(FROM_EMAIL));
         message.setRecipients(TO, InternetAddress.parse(email, false));
         message.setRecipients(CC, InternetAddress.parse(CC_EMAIL, false));
         message.setSubject(EMAIL_SUBJECT);
-        message.setText("Hello " + firstName + "\n \n your new account password is: " + password + "\n \n The Support team");
+        message.setText("Hello " + firstName + "\n \n your new account credentials are: \nusername: " + username + "\npassword: " + password + "\n \n The Support team");
+        message.setSentDate(new Date());
+        message.saveChanges();
+        return message;
+    }
+
+    private Message createEmail(String text_message, String email) throws MessagingException {
+        Message message = new MimeMessage(getEmailSession());
+        message.setFrom(new InternetAddress(FROM_EMAIL));
+        message.setRecipients(TO, InternetAddress.parse(email, false));
+        message.setRecipients(CC, InternetAddress.parse(CC_EMAIL, false));
+        message.setSubject(FOUND_RECIEVE_EMAIL_SUBJECT);
+        message.setText(text_message);
         message.setSentDate(new Date());
         message.saveChanges();
         return message;

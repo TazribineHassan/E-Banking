@@ -15,6 +15,7 @@ import org.springframework.security.web.authentication.WebAuthenticationDetailsS
 import org.springframework.stereotype.Component;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -25,7 +26,7 @@ import static com.ensas.ebanking.constant.SecurityConstant.*;
 import static java.util.Arrays.stream;
 
 @Component
-public class JWTokenProvider {
+public class JWTokenProvider implements Serializable {
 
     @Value("${jwt.secret}")
     private String secret;
@@ -51,6 +52,7 @@ public class JWTokenProvider {
 
     public boolean isTokenValid(String username, String token){
         JWTVerifier verifier = getJWTVerifier();
+        System.out.println(isTokenExpired(verifier, token));
         return StringUtils.isNotEmpty(username) && !isTokenExpired(verifier, token);
     }
 

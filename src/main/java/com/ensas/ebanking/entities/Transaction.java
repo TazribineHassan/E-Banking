@@ -1,5 +1,7 @@
 package com.ensas.ebanking.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import java.time.LocalDate;
 
@@ -15,10 +17,12 @@ public abstract class Transaction {
 
     private LocalDate date_transaction;
 
+    @JsonIgnore
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "client_id", referencedColumnName = "id")
     private Client client;
 
+    @JsonIgnore
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "agent_id", referencedColumnName = "id")
     private Agent agent;
@@ -61,4 +65,21 @@ public abstract class Transaction {
     public void setDate_transaction(LocalDate date_transaction) {
         this.date_transaction = date_transaction;
     }
+
+    public Client getClient() {
+        return client;
+    }
+
+    public void setClient(Client client) {
+        this.client = client;
+    }
+
+    public Agent getAgent() {
+        return agent;
+    }
+
+    public void setAgent(Agent agent) {
+        this.agent = agent;
+    }
+
 }

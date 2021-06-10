@@ -9,4 +9,5 @@ public interface AgenceRepository extends JpaRepository<Agence,Long> {
 
     List<Agence> findByNom(String nom);
     List<Agence> findByActive(boolean etat);
+    
 }

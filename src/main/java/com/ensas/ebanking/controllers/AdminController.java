@@ -47,7 +47,7 @@ public class AdminController {
 
     @GetMapping("/Admin/index")
     public String afficher(Model model) {
-        float solde=banqueRepository.findById(1L).get().getSolde();
+        double solde=banqueRepository.findById(1L).get().getSolde();
         int agents=agentRepository.findByIsActive(true).size();
         int agencesInactif=agenceRepository.findByActive(false).size();
         int agences=agenceRepository.findByActive(true).size();
@@ -223,6 +223,7 @@ public class AdminController {
         agent.setUsername(username);
         //emailService.sendNewPasswordEmail(null, null,null);
         userRepository.save(agent);
+        System.out.println("agent username: " + username + " password: " + password);
         return "redirect:/Admin/agents";
 
     }
