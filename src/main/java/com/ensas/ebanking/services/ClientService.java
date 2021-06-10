@@ -26,6 +26,6 @@ public interface ClientService {
                                String num_tele,
                                Date date_naissance,
                                boolean isActive) throws UserNotFoundException, UserExistExistException, EmailExistException;
-    public Client terminateClient(int client_id);
+    public Client terminateClient(Long client_id);
     public Client getClientByID(Long id);
 }

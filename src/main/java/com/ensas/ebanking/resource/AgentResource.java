@@ -146,7 +146,7 @@ public class AgentResource {
     }
 
     @PutMapping("/client/terminate/{id}")
-    public ResponseEntity<HttpResponse> terminateClient(@PathVariable int id){
+    public ResponseEntity<HttpResponse> terminateClient(@PathVariable Long id){
         Client terminatedClient = this.clientService.terminateClient(id);
         return  response(OK, USER_BLOCKED_SUCCESSFULLY);
     }

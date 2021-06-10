@@ -39,6 +39,7 @@ public class Agence {
     @JoinColumn(name = "banque_id", referencedColumnName = "id")
     private Banque banque;
 
+    @JsonIgnore
     @OneToOne(mappedBy = "agence")
     private Agent agent;
 
