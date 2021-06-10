@@ -13,9 +13,6 @@ import java.util.Set;
 @DiscriminatorValue("Client")
 public class Client extends User {
 
-    private String type_client;
-
-
     //foreign keys
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "agence_id", referencedColumnName = "id")
@@ -46,13 +43,7 @@ public class Client extends User {
         this.transactions = transactions;
     }
 
-    public String getType_client() {
-        return type_client;
-    }
 
-    public void setType_client(String type_client) {
-        this.type_client = type_client;
-    }
 
     public Agence getAgence() {
         return agence;

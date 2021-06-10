@@ -19,12 +19,12 @@ public class Agent extends User {
     @OneToMany(mappedBy = "agent")
     private Set<Transaction> transactions = new HashSet<>();
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne()
     @JoinColumn(name = "agence_id", referencedColumnName = "id")
     private Agence agence;
 
-
-    public Agent() {
+    public Agence getAgence() {
+        return agence;
     }
 
     public Agent(String cin, String nom, String prenom, String email, String num_tele, Date date_naissance, Date lastLoginDate, Date lastLoginDateDisplay, Date joinDate, String username, String password, String roles, String[] authorities, boolean isActive, boolean isNotLocked, String code_agent, Set<Transaction> transactions, Agence agence) {
@@ -34,12 +34,19 @@ public class Agent extends User {
         this.agence = agence;
     }
 
-    public Agent(int id, String cin, String nom, String prenom, String email, String num_tele, Date date_naissance, Date lastLoginDate, Date lastLoginDateDisplay, Date joinDate, String username, String password, String roles, String[] authorities, boolean isActive, boolean isNotLocked, String code_agent, Set<Transaction> transactions, Agence agence) {
+    public Agent(Long id, String cin, String nom, String prenom, String email, String num_tele, Date date_naissance, Date lastLoginDate, Date lastLoginDateDisplay, Date joinDate, String username, String password, String roles, String[] authorities, boolean isActive, boolean isNotLocked, String code_agent, Set<Transaction> transactions, Agence agence) {
         super(id, cin, nom, prenom, email, num_tele, date_naissance, lastLoginDate, lastLoginDateDisplay, joinDate, username, password, roles, authorities, isActive, isNotLocked);
         this.code_agent = code_agent;
         this.transactions = transactions;
+    }
+    public void setAgence(Agence agence) {
         this.agence = agence;
     }
+
+    public Agent() {
+    }
+
+
 
     public String getCode_agent() {
         return code_agent;

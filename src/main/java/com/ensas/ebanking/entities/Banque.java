@@ -30,12 +30,12 @@ public class Banque {
 
     public Banque(){ }
 
-    public Banque(Long id, String nom, float solde, Set<Agence> agences) {
+    public Banque(Long id, String nom, float solde) {
         this.id = id;
         this.nom = nom;
         this.solde = solde;
-        this.agences = agences;
     }
+
 
     public Long getId() {
         return id;

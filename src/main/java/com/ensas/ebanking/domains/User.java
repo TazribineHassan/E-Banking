@@ -2,6 +2,7 @@ package com.ensas.ebanking.domains;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.databind.annotation.JsonAppend;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -14,12 +15,14 @@ public abstract class User implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(nullable = false, updatable = false)
-    private int id;
+    private Long id;
     private String cin;
     private String nom;
     private String prenom;
     private String email;
     private String num_tele;
+    @Temporal(TemporalType.DATE)
+    @DateTimeFormat(style="yyyy-MM-dd")
     private Date date_naissance;
     private Date lastLoginDate;
     private Date lastLoginDateDisplay;
@@ -36,13 +39,14 @@ public abstract class User implements Serializable {
     }
 
 
-    public User(int id, String cin, String nom, String prenom, String email, String num_tele, Date date_naissance, Date lastLoginDate, Date lastLoginDateDisplay, Date joinDate, String username, String password, String roles, String[] authorities, boolean isActive, boolean isNotLocked) {
+    public User(Long id, String cin, String nom, String prenom, String email, String num_tele, Date date_naissance, Date lastLoginDate, Date lastLoginDateDisplay, Date joinDate, String username, String password, String roles, String[] authorities, boolean isActive, boolean isNotLocked) {
         this.id = id;
         this.cin = cin;
         this.nom = nom;
         this.prenom = prenom;
         this.email = email;
         this.num_tele = num_tele;
+
         this.date_naissance = date_naissance;
 
         this.lastLoginDate = lastLoginDate;
@@ -63,6 +67,7 @@ public abstract class User implements Serializable {
         this.prenom = prenom;
         this.email = email;
         this.num_tele = num_tele;
+
         this.date_naissance = date_naissance;
         this.lastLoginDate = lastLoginDate;
         this.lastLoginDateDisplay = lastLoginDateDisplay;
@@ -131,11 +136,11 @@ public abstract class User implements Serializable {
         isNotLocked = notLocked;
     }
 
-    public int getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
