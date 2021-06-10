@@ -16,7 +16,7 @@ public class Banque {
 
     private String nom;
 
-    private float solde;
+    private double solde;
 
     //foreign keys
     @JsonIgnore
@@ -30,12 +30,12 @@ public class Banque {
 
     public Banque(){ }
 
-    public Banque(Long id, String nom, float solde, Set<Agence> agences) {
+    public Banque(Long id, String nom, float solde) {
         this.id = id;
         this.nom = nom;
         this.solde = solde;
-        this.agences = agences;
     }
+
 
     public Long getId() {
         return id;
@@ -53,11 +53,11 @@ public class Banque {
         this.nom = nom;
     }
 
-    public float getSolde() {
+    public double getSolde() {
         return solde;
     }
 
-    public void setSolde(float solde) {
+    public void setSolde(double solde) {
         this.solde = solde;
     }
 

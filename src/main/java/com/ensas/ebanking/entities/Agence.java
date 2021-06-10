@@ -24,15 +24,26 @@ public class Agence {
 
     private String num_tele;
 
+    private boolean active;
+
+    public boolean isActive() {
+        return active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
+    }
+
     //foreign keys
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne()
     @JoinColumn(name = "banque_id", referencedColumnName = "id")
     private Banque banque;
 
+    @JsonIgnore
     @OneToOne(mappedBy = "agence")
     private Agent agent;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne()
     @JoinColumn(name = "adresse_id", referencedColumnName = "id")
     private Adresse adresse;
 
@@ -52,6 +63,36 @@ public class Agence {
         this.num_tele = num_tele;
         this.banque = banque;
         this.adresse = adresse;
+    }
+
+    public Agence(Long id, String code, String nom, String horaire_debut, String horaire_fin, String num_tele, Agent agent, Adresse adresse, Set<Client> clients) {
+        this.id = id;
+        this.code = code;
+        this.nom = nom;
+        this.horaire_debut = horaire_debut;
+        this.horaire_fin = horaire_fin;
+        this.num_tele = num_tele;
+        this.agent = agent;
+        this.adresse = adresse;
+        this.clients = clients;
+    }
+
+    public Agence(String code, String nom, String horaire_debut, String horaire_fin, String num_tele, Banque banque, Adresse adresse) {
+        this.code = code;
+        this.nom = nom;
+        this.horaire_debut = horaire_debut;
+        this.horaire_fin = horaire_fin;
+        this.num_tele = num_tele;
+        this.banque = banque;
+        this.adresse = adresse;
+    }
+
+    public Agent getAgent() {
+        return agent;
+    }
+
+    public void setAgent(Agent agent) {
+        this.agent = agent;
     }
 
     public Long getId() {

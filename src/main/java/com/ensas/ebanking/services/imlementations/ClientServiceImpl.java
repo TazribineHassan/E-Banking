@@ -88,7 +88,6 @@ public class ClientServiceImpl implements ClientService {
         client.setUsername(username);
         client.setJoinDate(new Date());
         client.setCompte(compte);
-        client.setType_client("individuel");
         client.setActive(true);
         client.setNotLocked(true);
         client.setPassword(encodePassword(password));
@@ -134,7 +133,7 @@ public class ClientServiceImpl implements ClientService {
     }
 
     @Override
-    public Client terminateClient(int client_id) {
+    public Client terminateClient(Long client_id) {
         Client client = clientRepository.findById(client_id).get();
         client.setActive(false);
         return this.clientRepository.save(client);
@@ -184,6 +183,6 @@ public class ClientServiceImpl implements ClientService {
 
     @Override
     public Client getClientByID(Long id) {
-        return this.clientRepository.findById(Math.toIntExact(id)).get();
+        return this.clientRepository.findById(id).get();
     }
 }

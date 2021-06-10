@@ -9,7 +9,7 @@ public interface AgentService {
     public Agent addAgent(Agent agent);
     public Agent findUserByUsername(String username);
 
-    Agent findAgentByID(int id);
+    Agent findAgentByID(Long id);
 
     Agent updateAgent(String current_username, Agent agent) throws UserNotFoundException, UserExistExistException, EmailExistException;
 }

@@ -9,12 +9,10 @@ import com.ensas.ebanking.exceptions.domain.EmailExistException;
 import com.ensas.ebanking.exceptions.domain.UserExistExistException;
 import com.ensas.ebanking.exceptions.domain.UserNotFoundException;
 import com.ensas.ebanking.repositories.VersementRepository;
-import com.ensas.ebanking.services.AgentService;
-import com.ensas.ebanking.services.ClientService;
-import com.ensas.ebanking.services.CompteService;
-import com.ensas.ebanking.services.VersementService;
+import com.ensas.ebanking.services.*;
 import org.springframework.stereotype.Service;
 
+import javax.mail.MessagingException;
 import javax.transaction.Transactional;
 import java.time.LocalDate;
 
@@ -27,14 +25,14 @@ public class VersementServiceImpl implements VersementService {
 
     private final VersementRepository versementRepository;
     private final CompteService compteService;
-    private final ClientService clientService;
-    private final AgentService agentService;
+    private final EmailService emailService;
+    private final BanqueService banqueService;
 
-    public VersementServiceImpl(VersementRepository versementRepository, CompteService compteService, ClientService clientService, AgentService agentService) {
+    public VersementServiceImpl(VersementRepository versementRepository, CompteService compteService, EmailService emailService, BanqueService banqueService) {
         this.versementRepository = versementRepository;
         this.compteService = compteService;
-        this.clientService = clientService;
-        this.agentService = agentService;
+        this.emailService = emailService;
+        this.banqueService = banqueService;
     }
 
 
@@ -43,7 +41,7 @@ public class VersementServiceImpl implements VersementService {
                                   String CIN_verseur,
                                   double Montant_versement,
                                   String num_compte_beneficiaire,
-                                  Agent currentAgent) throws AccountNotFoundException, UserNotFoundException, UserExistExistException, EmailExistException {
+                                  Agent currentAgent) throws AccountNotFoundException, UserNotFoundException, UserExistExistException, EmailExistException, MessagingException {
 
         //find the destination account
         Compte distCompte = compteService.findComptByNum(num_compte_beneficiaire);
@@ -69,6 +67,14 @@ public class VersementServiceImpl implements VersementService {
         // add money to the destination account
         distCompte.setSolde(distCompte.getSolde() + Montant_versement);
         distCompte = compteService.updateCompte(distCompte);
+
+        // send email to the beneficiary
+//        emailService.sendFoundRecievedEmail(client.getNom() + "" + client.getPrenom(),
+//                                            versement.getMontant(),
+//                                            client.getEmail());
+
+        // increment the bank solde
+        banqueService.addToSolde(addedVersement.getMontant());
 
         return addedVersement;
     }

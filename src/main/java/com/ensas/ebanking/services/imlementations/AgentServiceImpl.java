@@ -28,7 +28,7 @@ public class AgentServiceImpl implements AgentService {
 
     @Override
     public Agent addAgent(Agent agent) {
-        return agentRepository.save(agent);
+        return (Agent) agentRepository.save(agent);
     }
 
     @Override
@@ -37,14 +37,14 @@ public class AgentServiceImpl implements AgentService {
     }
 
     @Override
-    public Agent findAgentByID(int id) {
-        return this.agentRepository.findById(id).get();
+    public Agent findAgentByID(Long id) {
+        return (Agent) this.agentRepository.findById(id).get();
     }
 
     @Override
     public Agent updateAgent(String current_username, Agent agent) throws UserNotFoundException, UserExistExistException, EmailExistException {
         validateNewUsernameAndEmail(current_username , agent.getUsername(), agent.getEmail());
-        return this.agentRepository.save(agent);
+        return (Agent) this.agentRepository.save(agent);
     }
 
 
