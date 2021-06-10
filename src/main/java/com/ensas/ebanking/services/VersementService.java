@@ -7,9 +7,11 @@ import com.ensas.ebanking.exceptions.domain.EmailExistException;
 import com.ensas.ebanking.exceptions.domain.UserExistExistException;
 import com.ensas.ebanking.exceptions.domain.UserNotFoundException;
 
+import javax.mail.MessagingException;
+
 public interface VersementService {
     public Versement addVersement(String Nom_versement,
                                   String CIN_verseur,
                                   double Montant_versement,
-                                  String num_compte_beneficiaire, Agent currentAgent) throws AccountNotFoundException, UserNotFoundException, UserExistExistException, EmailExistException;
+                                  String num_compte_beneficiaire, Agent currentAgent) throws AccountNotFoundException, UserNotFoundException, UserExistExistException, EmailExistException, MessagingException;
 }

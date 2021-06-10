@@ -49,7 +49,6 @@ public class AgentResource {
     private final ClientServiceImpl clientService;
     private final AuthenticationManager authenticationManager;
     private final JWTokenProvider jwTokenProvider;
-    private final CompteService compteService;
     private final AgentService agentService;
     private final VersementService versementService;
 
@@ -58,13 +57,11 @@ public class AgentResource {
     public AgentResource(ClientServiceImpl clientService,
                          AuthenticationManager authenticationManager,
                          JWTokenProvider jwTokenProvider,
-                         CompteService compteService,
                          AgentService agentService,
                          VersementService versementService) {
         this.clientService = clientService;
         this.authenticationManager = authenticationManager;
         this.jwTokenProvider = jwTokenProvider;
-        this.compteService = compteService;
         this.agentService = agentService;
         this.versementService = versementService;
     }
@@ -86,7 +83,7 @@ public class AgentResource {
                                                @RequestParam(name = "nom_verseur") String nom_verseur,
                                                @RequestParam(name = "CIN_verseur") String CIN_verseur,
                                                @RequestParam(name = "num_compte_beneficiaire") String num_compte_beneficiaire,
-                                               @RequestParam(name = "Montant_versement") double Montant_versement ) throws UserNotFoundException, UserExistExistException, EmailExistException, AccountNotFoundException {
+                                               @RequestParam(name = "Montant_versement") double Montant_versement ) throws UserNotFoundException, UserExistExistException, EmailExistException, AccountNotFoundException, MessagingException {
 
         String auth_username = principal.getName();
         Agent currentAgent = agentService.findUserByUsername(auth_username);
