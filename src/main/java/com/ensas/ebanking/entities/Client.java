@@ -12,9 +12,6 @@ import java.util.Set;
 @DiscriminatorValue("Client")
 public class Client extends User {
 
-    private String type_client;
-
-
     //foreign keys
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "agence_id", referencedColumnName = "id")
@@ -29,20 +26,8 @@ public class Client extends User {
 
     public Client() { }
 
-    public Client(String cin, String nom, String prenom, String email, String num_tele, LocalDate date_naissance, String profileImageUrl, Date lastLoginDate, Date lastLoginDateDisplay, String username, String password, String[] roles, String[] authorities, boolean isActive, boolean isNotLocked, String type_client, Agence agence, Compte compte, Set<Transaction> transactions) {
-        super(cin, nom, prenom, email, num_tele, date_naissance, profileImageUrl, lastLoginDate, lastLoginDateDisplay, username, password, roles, authorities, isActive, isNotLocked);
-        this.type_client = type_client;
-        this.agence = agence;
-        this.compte = compte;
-    }
 
-    public String getType_client() {
-        return type_client;
-    }
 
-    public void setType_client(String type_client) {
-        this.type_client = type_client;
-    }
 
     public Agence getAgence() {
         return agence;
@@ -50,5 +35,13 @@ public class Client extends User {
 
     public void setAgence(Agence agence) {
         this.agence = agence;
+    }
+
+    public Compte getCompte() {
+        return compte;
+    }
+
+    public void setCompte(Compte compte) {
+        this.compte = compte;
     }
 }

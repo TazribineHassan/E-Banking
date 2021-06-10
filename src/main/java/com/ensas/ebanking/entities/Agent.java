@@ -18,20 +18,22 @@ public class Agent extends User {
     @OneToMany(mappedBy = "agent")
     private Set<Transaction> transactions = new HashSet<>();
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne()
     @JoinColumn(name = "agence_id", referencedColumnName = "id")
     private Agence agence;
 
+    public Agence getAgence() {
+        return agence;
+    }
+
+    public void setAgence(Agence agence) {
+        this.agence = agence;
+    }
 
     public Agent() {
     }
 
-    public Agent(int id, String cin, String nom, String prenom, String email, String num_tele, LocalDate date_naissance, String profileImageUrl, Date lastLoginDate, Date lastLoginDateDisplay, String username, String password, String[] roles, String[] authorities, boolean isActive, boolean isNotLocked, String code_agent, Set<Transaction> transactions, Agence agence) {
-        super(id, cin, nom, prenom, email, num_tele, date_naissance, profileImageUrl, lastLoginDate, lastLoginDateDisplay, username, password, roles, authorities, isActive, isNotLocked);
-        this.code_agent = code_agent;
-        this.transactions = transactions;
-        this.agence = agence;
-    }
+
 
     public String getCode_agent() {
         return code_agent;

@@ -33,6 +33,13 @@ public class Adresse {
         this.agence = agence;
     }
 
+    public Adresse(String rue, String ville, String code_postal, String pays) {
+        this.rue = rue;
+        this.ville = ville;
+        this.code_postal = code_postal;
+        this.pays = pays;
+    }
+
     public Long getId() {
         return id;
     }
