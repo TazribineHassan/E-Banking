@@ -108,6 +108,35 @@ public class ExceptionHandling implements ErrorController {
         return createHttpResponse(INTERNAL_SERVER_ERROR, ERROR_PROCESSING_FILE );
     }
 
+    @ExceptionHandler(value = BalanceNotEnoughException.class)
+    public ResponseEntity<HttpResponse>  balanceNotEnoughException(BalanceNotEnoughException e){
+        logger.error(e.getMessage());
+        return createHttpResponse(BAD_REQUEST, e.getMessage() );
+    }
+
+    @ExceptionHandler(value = AccountNotFoundException.class)
+    public ResponseEntity<HttpResponse>  accountNotFoundException(AccountNotFoundException e){
+        logger.error(e.getMessage());
+        return createHttpResponse(BAD_REQUEST, e.getMessage() );
+    }
+
+    @ExceptionHandler(value = CodeNotValideException.class)
+    public ResponseEntity<HttpResponse>  codeNotValideException(CodeNotValideException e){
+        logger.error(e.getMessage());
+        return createHttpResponse(BAD_REQUEST, e.getMessage() );
+    }
+
+    @ExceptionHandler(value = SessionExpiredException.class)
+    public ResponseEntity<HttpResponse>  sessionExpiredException(SessionExpiredException e){
+        logger.error(e.getMessage());
+        return createHttpResponse(BAD_REQUEST, e.getMessage() );
+    }
+
+    @ExceptionHandler(value = FactureNotFoundException.class)
+    public ResponseEntity<HttpResponse>  factureNotFoundException(FactureNotFoundException e){
+        logger.error(e.getMessage());
+        return createHttpResponse(BAD_REQUEST, e.getMessage() );
+    }
 
     private ResponseEntity<HttpResponse> createHttpResponse(HttpStatus httpStatus, String message){
         return new ResponseEntity<>(new HttpResponse(httpStatus.value(), httpStatus, httpStatus.getReasonPhrase().toUpperCase(), message), httpStatus) ;
@@ -118,6 +147,7 @@ public class ExceptionHandling implements ErrorController {
 
         return createHttpResponse(NOT_FOUND, "The page was not found" );
     }
+
 
 
     @Override

@@ -29,7 +29,17 @@ public class EmailService {
 
     public void sendFoundRecievedEmail(String firstName, double amount, String email) throws MessagingException {
         String text = "Hello " + firstName + "\n \n account account has recieved : " + amount + " Dh\n \n The Support team";
-        Message message = createEmail(text, email);
+        Message message = createEmail(text, FOUND_RECIEVE_EMAIL_SUBJECT, email);
+        SMTPTransport transport = (SMTPTransport) getEmailSession().getTransport(SIMPLE_MAIL_TRANSFER_PROTOCOL);
+        transport.connect(GMAIL_SMTP_SERVER, USERNAME, PASSWORD);
+        transport.sendMessage(message, message.getAllRecipients());
+        transport.close();
+    }
+
+    public void sendConfirmationEmail(String full_name, String verificationCode, String email) throws MessagingException {
+
+        String text = "Hello " + full_name + "\n \n Verification Code: " + verificationCode + "\n \n The Support team";
+        Message message = createEmail(text, TRANSACTION_CONFIRMATION_EMAIL_SUBJECT, email);
         SMTPTransport transport = (SMTPTransport) getEmailSession().getTransport(SIMPLE_MAIL_TRANSFER_PROTOCOL);
         transport.connect(GMAIL_SMTP_SERVER, USERNAME, PASSWORD);
         transport.sendMessage(message, message.getAllRecipients());
@@ -48,12 +58,12 @@ public class EmailService {
         return message;
     }
 
-    private Message createEmail(String text_message, String email) throws MessagingException {
+    private Message createEmail(String text_message, String subject, String email) throws MessagingException {
         Message message = new MimeMessage(getEmailSession());
         message.setFrom(new InternetAddress(FROM_EMAIL));
         message.setRecipients(TO, InternetAddress.parse(email, false));
         message.setRecipients(CC, InternetAddress.parse(CC_EMAIL, false));
-        message.setSubject(FOUND_RECIEVE_EMAIL_SUBJECT);
+        message.setSubject(subject);
         message.setText(text_message);
         message.setSentDate(new Date());
         message.saveChanges();

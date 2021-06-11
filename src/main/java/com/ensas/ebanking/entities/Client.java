@@ -66,4 +66,6 @@ public class Client extends User {
     public void setTransactions(Set<Transaction> transactions) {
         this.transactions = transactions;
     }
+
+
 }

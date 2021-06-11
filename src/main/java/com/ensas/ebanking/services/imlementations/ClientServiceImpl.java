@@ -2,6 +2,7 @@ package com.ensas.ebanking.services.imlementations;
 
 import com.ensas.ebanking.domains.User;
 import com.ensas.ebanking.entities.Agence;
+import com.ensas.ebanking.entities.Agent;
 import com.ensas.ebanking.entities.Client;
 import com.ensas.ebanking.entities.Compte;
 import com.ensas.ebanking.exceptions.domain.EmailExistException;
@@ -184,5 +185,10 @@ public class ClientServiceImpl implements ClientService {
     @Override
     public Client getClientByID(Long id) {
         return this.clientRepository.findById(id).get();
+    }
+
+    @Override
+    public Client findClientByUsername(String username) {
+        return (Client) clientRepository.findUserByUsername(username);
     }
 }

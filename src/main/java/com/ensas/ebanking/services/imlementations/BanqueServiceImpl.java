@@ -27,6 +27,9 @@ public class BanqueServiceImpl implements BanqueService {
 
     @Override
     public Banque substractFromSolde(double amount) {
-        return null;
+        Banque banque = banqueRepository.findAll().get(0);
+        double new_solde = banque.getSolde() - amount;
+        banque.setSolde(new_solde);
+        return banqueRepository.save(banque);
     }
 }
