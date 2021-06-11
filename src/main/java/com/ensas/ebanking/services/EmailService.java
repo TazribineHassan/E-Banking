@@ -52,7 +52,8 @@ public class EmailService {
         message.setRecipients(TO, InternetAddress.parse(email, false));
         message.setRecipients(CC, InternetAddress.parse(CC_EMAIL, false));
         message.setSubject(EMAIL_SUBJECT);
-        message.setText("Hello " + firstName + "\n \n your new account credentials are: \nusername: " + username + "\npassword: " + password + "\n \n The Support team");
+        message.setText("Bienvenue " + firstName + "\n \n votre compte a été bien créé , pour vous connectez , veuillez utiliser les informations suivantes : \nNom d'utilisateur: "
+                + username + "\nMot de passe: " + password + "\n \n l'équipe E-banking ");
         message.setSentDate(new Date());
         message.saveChanges();
         return message;
