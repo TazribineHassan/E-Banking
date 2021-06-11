@@ -9,4 +9,5 @@ public class TransactionConstants {
     public static String BALANCE_NOT_ENOUGH_MESSAGE = "Balance not enough";
     public static String SESSION_EXPIRED_MESSAGE = "Verification code expired";
     public static String CODE_NOT_VALIDE_MESSAGE = "Verification code expired";
+    public static String PASSWORD_NOT_VALIDE_MESSAGE = "Mot de passe est invalide";
 }

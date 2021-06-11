@@ -4,11 +4,9 @@ package com.ensas.ebanking.resource;
 import com.ensas.ebanking.domains.User;
 import com.ensas.ebanking.domains.UserPrincipal;
 import com.ensas.ebanking.entities.Admin;
+import com.ensas.ebanking.entities.Client;
 import com.ensas.ebanking.entities.LoginUser;
-import com.ensas.ebanking.exceptions.domain.EmailExistException;
-import com.ensas.ebanking.exceptions.domain.ExceptionHandling;
-import com.ensas.ebanking.exceptions.domain.UserExistExistException;
-import com.ensas.ebanking.exceptions.domain.UserNotFoundException;
+import com.ensas.ebanking.exceptions.domain.*;
 import com.ensas.ebanking.services.UserService;
 import com.ensas.ebanking.utilities.JWTokenProvider;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.mail.MessagingException;
 
+import java.security.Principal;
 import java.util.Date;
 import java.util.List;
 
@@ -41,6 +40,13 @@ public class UserResource extends ExceptionHandling {
         this.jwTokenProvider = jwTokenProvider;
     }
 
+    @GetMapping("/current/dtails")
+    public ResponseEntity<User> getCurrentUser(Principal principal){
+        String username = principal.getName();
+        User currentUser = userService.findUserByUsername(username);
+        return new ResponseEntity<>(currentUser, OK);
+    }
+
     @PostMapping("/admin/register")
     public ResponseEntity<Admin> register(@RequestBody Admin admin) throws UserNotFoundException, UserExistExistException, EmailExistException, MessagingException {
         Admin newAdmin =  userService.register(admin.getCin(), admin.getNom(), admin.getPrenom(), admin.getUsername(), admin.getEmail(), new Date());
@@ -54,6 +60,30 @@ public class UserResource extends ExceptionHandling {
         UserPrincipal userPrincipal = new UserPrincipal(loginUser);
         HttpHeaders jwtHeader = getJwtHeader(userPrincipal);
         return new ResponseEntity<>(loginUser, jwtHeader, OK);
+    }
+
+    @PutMapping("/resetpassword")
+    public ResponseEntity<Boolean> resetPassword(@RequestParam(name = "old_password") String old_password,
+                                                 @RequestParam(name = "new_password")String new_password,
+                                                 Principal principal) throws Exception {
+        // get the current client
+        String username = principal.getName();
+        if (username == null)
+            throw new Exception("Erreur!");
+
+        // try to authenticate with the real user name and the old password provided
+        try {
+            authentication(username, old_password);
+        }catch (Exception e){
+            throw new PasswordInvalideException();
+        }
+
+        // update the password
+        User user = userService.updatePassword(username, new_password);
+        if (user == null)
+            throw new Exception("Erreur!");;
+
+        return new ResponseEntity<>(true, OK);
     }
 
     @GetMapping("/list")
