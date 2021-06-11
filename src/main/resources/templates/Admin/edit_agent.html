@@ -169,12 +169,7 @@
                                             <input class="form-control" type="text" name="prenom" th:value="${agent.prenom}" required>
                                         </div>
                                     </div>
-                                    <div class="col-sm-6">
-                                        <div class="form-group">
-                                            <label>Code<span class="text-danger">*</span></label>
-                                            <input class="form-control" type="text" name="code" th:value="${agent.code_agent}" required>
-                                        </div>
-                                    </div>
+
                                     <div class="col-sm-6">
                                         <div class="form-group">
                                             <label>CIN<span class="text-danger">*</span></label>
@@ -266,19 +261,19 @@
 
     <!-- Logout Modal-->
     <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-        aria-hidden="true">
+         aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Ready to Leave?</h5>
+                    <h5 class="modal-title" id="exampleModalLabel">Se déconnecter </h5>
                     <button class="close" type="button" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">×</span>
                     </button>
                 </div>
-                <div class="modal-body">Select "Logout" below if you are ready to end your current session.</div>
+                <div class="modal-body">Sélectionnez "déconnexion" si vous voulez vous déconnectez.</div>
                 <div class="modal-footer">
-                    <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
-                    <a class="btn btn-primary" href="login.html">Logout</a>
+                    <button class="btn btn-secondary" type="button" data-dismiss="modal">Annuler</button>
+                    <a class="btn btn-primary" th:href="@{/Admin/logout}">déconnexion</a>
                 </div>
             </div>
         </div>

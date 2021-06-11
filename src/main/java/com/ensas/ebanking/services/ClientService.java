@@ -1,5 +1,6 @@
 package com.ensas.ebanking.services;
 
+import com.ensas.ebanking.entities.Agent;
 import com.ensas.ebanking.entities.Client;
 import com.ensas.ebanking.exceptions.domain.EmailExistException;
 import com.ensas.ebanking.exceptions.domain.UserExistExistException;
@@ -28,4 +29,5 @@ public interface ClientService {
                                boolean isActive) throws UserNotFoundException, UserExistExistException, EmailExistException;
     public Client terminateClient(Long client_id);
     public Client getClientByID(Long id);
+    public Client findClientByUsername(String username);
 }
