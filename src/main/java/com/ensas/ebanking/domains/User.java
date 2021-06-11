@@ -1,6 +1,7 @@
 package com.ensas.ebanking.domains;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonAppend;
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -28,7 +29,9 @@ public abstract class User implements Serializable {
     private Date lastLoginDateDisplay;
     private Date joinDate;
     // for spring security.
+    //@JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String username;
+    //@JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String password;
     private String roles;
     private String[] authorities;

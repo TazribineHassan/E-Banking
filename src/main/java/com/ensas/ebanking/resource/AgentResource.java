@@ -42,7 +42,7 @@ import static org.springframework.http.HttpStatus.OK;
 
 @RestController
 @RequestMapping(path= {"/agent"})
-@PreAuthorize("hasAnyAuthority('manage_clients')")
+//@PreAuthorize("hasAnyAuthority('manage_clients')")
 public class AgentResource {
 
     private static final String USER_BLOCKED_SUCCESSFULLY = "Le compte bloqué avec succès";
