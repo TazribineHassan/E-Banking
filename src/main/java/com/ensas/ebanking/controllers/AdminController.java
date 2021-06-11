@@ -1,9 +1,11 @@
 package com.ensas.ebanking.controllers;
 
+import ch.qos.logback.core.net.SyslogOutputStream;
 import com.ensas.ebanking.entities.*;
 import com.ensas.ebanking.repositories.*;
 import com.ensas.ebanking.services.EmailService;
 import org.apache.commons.lang.RandomStringUtils;
+import org.dom4j.rule.Mode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -13,6 +15,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 
 import javax.mail.MessagingException;
+import javax.mail.Session;
+import javax.servlet.http.HttpSession;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -28,7 +32,7 @@ import static com.ensas.ebanking.enumeration.Role.ROLE_AGENT;
 public class AdminController {
 
     private BCryptPasswordEncoder passwordEncoder=new BCryptPasswordEncoder();;
-    private EmailService emailService;
+    private EmailService emailService=new EmailService();
 
     @Autowired
     private AgenceRepository agenceRepository;
@@ -45,26 +49,79 @@ public class AdminController {
     @Autowired
     private AdminRepository adminRepository;
 
-    @GetMapping("/Admin/index")
-    public String afficher(Model model) {
-        double solde=banqueRepository.findById(1L).get().getSolde();
-        int agents=agentRepository.findByIsActive(true).size();
-        int agencesInactif=agenceRepository.findByActive(false).size();
-        int agences=agenceRepository.findByActive(true).size();
-        int clients=clientRepository.findAll().size();
-        model.addAttribute("solde",solde);
-        model.addAttribute("agents",agents);
-        model.addAttribute("agences",agences);
-        model.addAttribute("clients",clients);
-        model.addAttribute("agencesInactives",agencesInactif);
+
+
+    //login
+    @GetMapping("/Admin/login")
+    public String login(){
+
+        return "Admin/login";
+    }
+    @GetMapping("/Admin/loginError")
+    public String loginerror(String username,String mdp,Model model,HttpSession session){
+
+        model.addAttribute("error","Veuillez vous connectez tout d'abord");
+        return "Admin/login";
+    }
+    @GetMapping("/Admin/loginwitherrors")
+    public String invalidelogin(Model model){
+
+        model.addAttribute("error","Username ou mot de passe invalide");
+        return "Admin/login";
+    }
+
+    @PostMapping("/Admin/loginadmin")
+    public String loginPage(HttpSession session,String username,String mdp,Model model){
         Admin admin=adminRepository.findAll().get(0);
-        model.addAttribute("admin",admin);
-        return "Admin/index";
+        System.out.println("password 1"+admin.getPassword());
+        if(admin.getUsername().equals(username) && admin.getPassword().equals(mdp)){
+            session.setAttribute("adminId",admin.getId());
+            return "redirect:/Admin/index";
+        }
+        else{
+            return "redirect:/Admin/loginwitherrors";
+        }
+
+
+    }
+    @GetMapping("/Admin/logout")
+    public String logout(HttpSession session){
+        session.setAttribute("adminId",null);
+
+        return "Admin/login";
+    }
+
+    @GetMapping("/Admin/index")
+    public String afficher(Model model,HttpSession session) {
+        if(session.getAttribute("adminId")==null){
+
+            return "redirect:/Admin/loginError";
+        }
+        else{
+            double solde=banqueRepository.findById(1L).get().getSolde();
+            int agents=agentRepository.findByIsActive(true).size();
+            int agencesInactif=agenceRepository.findByActive(false).size();
+            int agences=agenceRepository.findByActive(true).size();
+            int clients=clientRepository.findAll().size();
+            model.addAttribute("solde",solde);
+            model.addAttribute("agents",agents);
+            model.addAttribute("agences",agences);
+            model.addAttribute("clients",clients);
+            model.addAttribute("agencesInactives",agencesInactif);
+            Admin admin=adminRepository.findAll().get(0);
+            model.addAttribute("admin",admin);
+            return "Admin/index";
+        }
+
 
     }
    //Agences
     @GetMapping("/Admin/agences")
-    public String afficherAgences(Model model) {
+    public String afficherAgences(Model model,HttpSession session) {
+        if(session.getAttribute("adminId")==null){
+
+            return "redirect:/Admin/loginError";
+        }
         List<Agence> agences = agenceRepository.findAll();
         model.addAttribute("agences", agences);
         Admin admin=adminRepository.findAll().get(0);
@@ -74,7 +131,11 @@ public class AdminController {
     }
 
     @GetMapping("/Admin/addagence")
-    public String addAgences(Model model) {
+    public String addAgences(Model model,HttpSession session) {
+        if(session.getAttribute("adminId")==null){
+
+            return "redirect:/Admin/loginError";
+        }
         Admin admin=adminRepository.findAll().get(0);
         model.addAttribute("admin",admin);
         return "Admin/ajoutAgence";
@@ -82,8 +143,9 @@ public class AdminController {
     }
 
     @PostMapping("/Admin/Agence/Add")
-    public String InsertAgences(Model model, Long id, String nom, String code, String horaire_debut, String horaire_fin,
+    public String InsertAgences(Model model, Long id, String nom,String horaire_debut, String horaire_fin,
                                 String num_tele, String ville, String rue, String code_postal,String active) {
+
         Adresse adresse = new Adresse();
         adresse.setCode_postal(code_postal);
         adresse.setPays("Maroc");
@@ -94,6 +156,8 @@ public class AdminController {
 
         Agence agence = new Agence();
         if (id != null) {
+            Agence age=agenceRepository.findById(id).get();
+            agence.setCode(age.getCode());
             if(active.equals("active")){
                 agence.setActive(true);
             }
@@ -104,9 +168,10 @@ public class AdminController {
         }
         if(id==null){
             agence.setActive(true);
+            agence.setCode(generateCode());
         }
         agence.setAdresse(adresse);
-        agence.setCode(code);
+
         agence.setNom(nom);
         agence.setNum_tele(num_tele);
         agence.setHoraire_debut(horaire_debut);
@@ -120,7 +185,11 @@ public class AdminController {
     }
 
     @GetMapping("/Admin/modifieragence")
-    public String update(Model model, Long id) {
+    public String update(Model model, Long id,HttpSession session) {
+        if(session.getAttribute("adminId")==null){
+
+            return "redirect:/Admin/loginError";
+        }
         Agence agence=agenceRepository.findById(id).get();
         model.addAttribute("agence",agence);
         Admin admin=adminRepository.findAll().get(0);
@@ -155,7 +224,11 @@ public class AdminController {
     //Agents
 
     @GetMapping("/Admin/agents")
-    public String afficherAgents(Model model) {
+    public String afficherAgents(Model model,HttpSession session) {
+        if(session.getAttribute("adminId")==null){
+
+            return "redirect:/Admin/loginError";
+        }
         List<Agent> agets = agentRepository.findAll();
       model.addAttribute("agents", agets);
         Admin admin=adminRepository.findAll().get(0);
@@ -164,7 +237,11 @@ public class AdminController {
 
     }
     @GetMapping("/Admin/addAgent")
-    public String addAgents(Model model) {
+    public String addAgents(Model model,HttpSession session) {
+        if(session.getAttribute("adminId")==null){
+
+            return "redirect:/Admin/loginError";
+        }
         List<Agence> agencess=agenceRepository.findAll();
         List<Agent> agents=agentRepository.findAll();
         List<Agence> agences=new ArrayList<>();
@@ -182,7 +259,7 @@ public class AdminController {
 
     }
     @PostMapping("/Admin/add/Agent")
-    public String insereragents(Long id,String cin, String nom, String prenom, String email, String date_naissance,String code,
+    public String insereragents(Long id,String cin, String nom, String prenom, String email, String date_naissance,
                                 String num_tele,String agence,String active) throws ParseException, MessagingException {
         Agent agent=new Agent() ;
        // System.out.println("iddddd"+id);
@@ -191,6 +268,11 @@ public class AdminController {
         String password = generatePassword();
         if(id!=null){
             agent.setId(id);
+            Agent agent1=agentRepository.findById(id).get();
+           agent.setPassword(agent1.getPassword());
+           agent.setUsername(agent1.getUsername());
+           agent.setJoinDate(agent1.getJoinDate());
+           agent.setCode_agent(agent1.getCode_agent());
             if(active.equals("active")){
                 agent.setActive(true);
             }
@@ -200,30 +282,31 @@ public class AdminController {
 
         }
         else {
+            String username=generateUsername();
+            agent.setUsername(username);
+            agent.setPassword(encodePassword(password));
             agent.setActive(true);
-        }
+            agent.setJoinDate(new Date());
+            agent.setCode_agent(generateCode());
+            emailService.sendNewPasswordEmail(nom+' '+prenom,username,password,email);
 
+            //System.out.println("agent username: " + username + " password: " + password);
+        }
         agent.setCin(cin);
         agent.setNom(nom);
         agent.setPrenom(prenom);
         agent.setEmail(email);
-        agent.setJoinDate(new Date());
         agent.setLastLoginDate(new Date());
         agent.setLastLoginDateDisplay(new Date());
-        agent.setPassword(encodePassword(password));
         System.out.println(password);
-        agent.setCode_agent(code);
+
         agent.setNotLocked(true);
         agent.setRoles(ROLE_AGENT.name());
         agent.setAuthorities(ROLE_AGENT.getAuthorities());
         agent.setNum_tele(num_tele);
         List<Agence> agen=agenceRepository.findByNom(agence);
         agent.setAgence(agen.get(0));
-        String username=generateUsername();
-        agent.setUsername(username);
-        //emailService.sendNewPasswordEmail(null, null,null);
         userRepository.save(agent);
-        System.out.println("agent username: " + username + " password: " + password);
         return "redirect:/Admin/agents";
 
     }
@@ -236,7 +319,11 @@ public class AdminController {
 
     }
     @GetMapping("/Admin/updateagent")
-    public String updateagent(Model model,Long id) {
+    public String updateagent(Model model,Long id,HttpSession session) {
+        if(session.getAttribute("adminId")==null){
+
+            return "redirect:/Admin/loginError";
+        }
         List<Agence> agencess=agenceRepository.findAll();
         List<Agent> agents=agentRepository.findAll();
         List<Agence> agences=new ArrayList<Agence>();
@@ -258,7 +345,11 @@ public class AdminController {
 
     //clients
     @GetMapping("/Admin/clients")
-    public String afficherclient(Model model){
+    public String afficherclient(Model model,HttpSession session){
+        if(session.getAttribute("adminId")==null){
+
+            return "redirect:/Admin/loginError";
+        }
         List<Client> clients=clientRepository.findAll();
         model.addAttribute("clients",clients);
         Admin admin=adminRepository.findAll().get(0);
@@ -267,8 +358,11 @@ public class AdminController {
     }
     //Profile
     @GetMapping("/Admin/profile")
-    public String afficherprofile(Model model){
+    public String afficherprofile(Model model,HttpSession session){
+        if(session.getAttribute("adminId")==null){
 
+            return "redirect:/Admin/loginError";
+        }
         Admin admin=adminRepository.findAll().get(0);
         model.addAttribute("admin",admin);
         return "Admin/MonProfile";
@@ -285,6 +379,9 @@ public class AdminController {
     }
     private String generateUsername() {
         return RandomStringUtils.randomAlphanumeric(6);
+    }
+    private String generateCode() {
+        return RandomStringUtils.randomAlphanumeric(7);
     }
 
     }
