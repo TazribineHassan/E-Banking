@@ -23,7 +23,7 @@ public class EBankingApplication {
         UrlBasedCorsConfigurationSource urlBasedCorsConfigurationSource = new UrlBasedCorsConfigurationSource();
         CorsConfiguration corsConfiguration = new CorsConfiguration();
         corsConfiguration.setAllowCredentials(true);
-        corsConfiguration.setAllowedOrigins(Arrays.asList("http://localhost:4200", "http://23.102.59.151"));
+        corsConfiguration.setAllowedOrigins(Arrays.asList("http://localhost:4200", "http://23.102.59.151:4300"));
         corsConfiguration.setAllowedHeaders(Arrays.asList("Origin", "Access-Control-Allow-origin", "Content-Type",
                 "Accept", "Jwt-Token", "Authorization", "Origin, Accept", "X-Requested-with", "Access-Control-Request-Method",
                 "Access-Control-Request-Headers"));
