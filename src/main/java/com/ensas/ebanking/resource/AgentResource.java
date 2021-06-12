@@ -30,14 +30,12 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 
 import javax.mail.MessagingException;
 import java.util.List;
 import java.util.Locale;
 
 import static com.ensas.ebanking.constant.SecurityConstant.JWT_TOKEN_HEADER;
-import static org.springframework.http.HttpStatus.NO_CONTENT;
 import static org.springframework.http.HttpStatus.OK;
 
 @RestController
