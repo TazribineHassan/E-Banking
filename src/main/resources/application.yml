@@ -6,7 +6,7 @@ server:
 spring:
   datasource:
     url: jdbc:mysql://localhost:3306/ebanking
-    password:
+    password:root
     username: root
   jpa:
     show-sql: true
