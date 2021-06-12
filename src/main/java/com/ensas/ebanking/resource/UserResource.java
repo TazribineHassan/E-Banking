@@ -29,9 +29,9 @@ import static org.springframework.http.HttpStatus.OK;
 @RequestMapping(path= {"/","/user"})
 public class UserResource extends ExceptionHandling {
 
-    private UserService userService;
-    private AuthenticationManager authenticationManager;
-    private JWTokenProvider jwTokenProvider;
+    private final UserService userService;
+    private final AuthenticationManager authenticationManager;
+    private final JWTokenProvider jwTokenProvider;
 
     @Autowired
     public UserResource(UserService userService, AuthenticationManager authenticationManager, JWTokenProvider jwTokenProvider) {

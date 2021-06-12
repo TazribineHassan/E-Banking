@@ -9,6 +9,7 @@ public class EmailConstants {
     public static final String EMAIL_SUBJECT = "Your password is: ";
     public static final String FOUND_RECIEVE_EMAIL_SUBJECT = "Found received";
     public static final String TRANSACTION_CONFIRMATION_EMAIL_SUBJECT = "Code Verification";
+    public static final String PAYMENT_EMAIL_SUBJECT = "Facture";
     public static final String GMAIL_SMTP_SERVER = "smtp.gmail.com";
     public static final String SMTP_HOST = "mail.smtp.host";
     public static final String SMTP_AUTH = "mail.smtp.auth";

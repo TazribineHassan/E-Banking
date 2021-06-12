@@ -44,7 +44,7 @@ public class AgentServiceImpl implements AgentService {
     @Override
     public Agent updateAgent(String current_username, Agent agent) throws UserNotFoundException, UserExistExistException, EmailExistException {
         validateNewUsernameAndEmail(current_username , agent.getUsername(), agent.getEmail());
-        return (Agent) this.agentRepository.save(agent);
+        return this.agentRepository.save(agent);
     }
 
 
