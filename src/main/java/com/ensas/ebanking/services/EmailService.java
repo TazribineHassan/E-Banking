@@ -45,7 +45,15 @@ public class EmailService {
         transport.sendMessage(message, message.getAllRecipients());
         transport.close();
     }
+    public void sendPaymentConfirmationdEmail(String full_name, String Code_facture, double montant_facture, String email) throws MessagingException {
 
+        String text = "Bonjour " + full_name + "\n\nla facture n: " + Code_facture + "a ete payee \nmontant " + montant_facture + "\n \n Le Support";
+        Message message = createEmail(text, PAYMENT_EMAIL_SUBJECT, email);
+        SMTPTransport transport = (SMTPTransport) getEmailSession().getTransport(SIMPLE_MAIL_TRANSFER_PROTOCOL);
+        transport.connect(GMAIL_SMTP_SERVER, USERNAME, PASSWORD);
+        transport.sendMessage(message, message.getAllRecipients());
+        transport.close();
+    }
     private Message createEmail(String firstName, String username,  String password, String email) throws MessagingException {
         Message message = new MimeMessage(getEmailSession());
         message.setFrom(new InternetAddress(FROM_EMAIL));

@@ -83,6 +83,7 @@ public class AgentResource {
                                                @RequestParam(name = "num_compte_beneficiaire") String num_compte_beneficiaire,
                                                @RequestParam(name = "Montant_versement") double Montant_versement ) throws UserNotFoundException, UserExistExistException, EmailExistException, AccountNotFoundException, MessagingException {
 
+        //get the current agent
         String auth_username = principal.getName();
         Agent currentAgent = agentService.findUserByUsername(auth_username);
         if (currentAgent == null)
@@ -103,10 +104,14 @@ public class AgentResource {
      * */
     @GetMapping("/client/all")
     public ResponseEntity<List<Client>> getAllClients(Principal principal){
+
+        // get the current agent
         String auth_username = principal.getName();
         Agent currentAgent = agentService.findUserByUsername(auth_username);
-        List<Client> clients = new ArrayList<Client>(currentAgent.getAgence().getClients());
-        return new ResponseEntity<List<Client>>(clients, OK);
+
+        // get all clients belongs to same agency
+        List<Client> clients = new ArrayList<>(currentAgent.getAgence().getClients());
+        return new ResponseEntity<>(clients, OK);
     }
 
     @PostMapping("/client/add")
@@ -120,9 +125,14 @@ public class AgentResource {
 
         DateFormat format = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH);
         //add the client to database
-        Client addedClient = this.clientService.addClient(cin, nom, prenom, email, num_tele, format.parse(date_naissance), id_agence);
+        Client addedClient = this.clientService.addClient(cin,
+                                                          nom,
+                                                          prenom,
+                                                          email,
+                                                          num_tele,
+                                                          format.parse(date_naissance),
+                                                          id_agence);
 
-        //this.clientService.updateClient(StringUtils.EMPTY, addedClient);
         return new ResponseEntity<>(addedClient, OK);
     }
 
@@ -138,7 +148,14 @@ public class AgentResource {
 
         DateFormat format = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH);
 
-        Client updatedClient = clientService.updateClient(username, cin, nom, prenom, email, num_tele, format.parse(date_naissance), Boolean.parseBoolean(isActive));
+        Client updatedClient = clientService.updateClient(username,
+                                                          cin,
+                                                          nom,
+                                                          prenom,
+                                                          email,
+                                                          num_tele,
+                                                          format.parse(date_naissance),
+                                                          Boolean.parseBoolean(isActive));
 
         return new ResponseEntity<>(updatedClient, OK);
     }

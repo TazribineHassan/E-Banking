@@ -151,6 +151,13 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         return null;
     }
 
+    @Override
+    public User updatePassword(String username, String new_password) {
+        User user = userRepository.findUserByUsername(username);
+        user.setPassword(encodePassword(new_password));
+        return userRepository.save(user);
+    }
+
     private User validateNewUsernameAndEmail(String currentUsername, String username, String  email) throws UserNotFoundException, UserExistExistException, EmailExistException {
 
         User userByUsername = findUserByUsername(username);

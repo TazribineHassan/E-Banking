@@ -51,9 +51,8 @@ public class ClinetResource {
 
     @PostMapping("/virement/make")
     public ResponseEntity<Virement> makeVirement(@RequestParam(name = "num_compte_beneficiaire") String num_compte_beneficiaire,
-                                                                   @RequestParam(name = "Montant_virement") double amount,
-                                                                   HttpServletRequest request,
-                                                                   Principal principal) throws MessagingException {
+                                                 @RequestParam(name = "Montant_virement") double amount,
+                                                 Principal principal) throws MessagingException {
         // get the current client
         String username = principal.getName();
         Client currentClient = clientService.findClientByUsername(username);
@@ -69,9 +68,9 @@ public class ClinetResource {
         String verificationCode = generateVerificationCode();
 
         // send verification mail to the beneficial client
-//        emailService.sendConfirmationEmail(currentClient.getNom() + " " + currentClient.getPrenom(),
-//                                           verificationCode,
-//                                           currentClient.getEmail());
+        emailService.sendConfirmationEmail(currentClient.getNom() + " " + currentClient.getPrenom(),
+                                           verificationCode,
+                                           currentClient.getEmail());
 
         // add verification code and transaction to the database
         CodeVerefication codeVerefication = codeVereficationRepo.findCodeVereficationByUsername(username);
@@ -94,7 +93,7 @@ public class ClinetResource {
     public ResponseEntity<Virement> validateVirement(@PathVariable String code,
                                                      HttpServletRequest request,
                                                      Principal principal)
-                                                        throws SessionExpiredException, CodeNotValideException, BalanceNotEnoughException, AccountNotFoundException {
+            throws SessionExpiredException, CodeNotValideException, BalanceNotEnoughException, AccountNotFoundException, MessagingException {
 
         // get the current client username
         String username = principal.getName();
@@ -149,9 +148,9 @@ public class ClinetResource {
         String verificationCode = generateVerificationCode();
 
         // send verification mail to the beneficial client
-//        emailService.sendConfirmationEmail(currentClient.getNom() + " " + currentClient.getPrenom(),
-//                                           verificationCode,
-//                                           currentClient.getEmail());
+        emailService.sendConfirmationEmail(currentClient.getNom() + " " + currentClient.getPrenom(),
+                                           verificationCode,
+                                           currentClient.getEmail());
 
         // add verification code and transaction to the database
         CodeVerefication codeVerefication = codeVereficationRepo.findCodeVereficationByUsername(username);
@@ -173,7 +172,7 @@ public class ClinetResource {
     @PostMapping("/payement/verify/{code}")
     public ResponseEntity<Payment> validatePayement(@PathVariable String code,
                                                      Principal principal)
-            throws SessionExpiredException, CodeNotValideException, BalanceNotEnoughException, AccountNotFoundException {
+            throws SessionExpiredException, CodeNotValideException, BalanceNotEnoughException, AccountNotFoundException, MessagingException {
 
         // get the current client username
         String username = principal.getName();

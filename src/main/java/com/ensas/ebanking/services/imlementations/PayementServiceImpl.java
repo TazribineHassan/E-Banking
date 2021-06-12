@@ -11,6 +11,7 @@ import com.ensas.ebanking.services.EmailService;
 import com.ensas.ebanking.services.PayementService;
 import org.springframework.stereotype.Service;
 
+import javax.mail.MessagingException;
 import javax.transaction.Transactional;
 import java.time.LocalDate;
 
@@ -34,7 +35,7 @@ public class PayementServiceImpl implements PayementService {
 
 
     @Override
-    public Payment makePayment(String num_compte_source, String numFacture, double amount) throws BalanceNotEnoughException {
+    public Payment makePayment(String num_compte_source, String numFacture, double amount) throws BalanceNotEnoughException, MessagingException {
 
 
         //find the source account and client
@@ -62,9 +63,10 @@ public class PayementServiceImpl implements PayementService {
         banqueService.substractFromSolde(amount);
 
         // send email to the beneficiary
-//        emailService.sendFoundRecievedEmail(beneficial_client.getNom() + "" + beneficial_client.getPrenom(),
-//                                            versement.getMontant(),
-//                                            beneficial_client.getEmail());
+        emailService.sendPaymentConfirmationdEmail(sourceClient.getNom() + "" + sourceClient.getPrenom(),
+                                                            payement.getCode_facture(),
+                                                            payement.getMontant_facture(),
+                                                            sourceClient.getEmail());
 
         return addedPayment;
 

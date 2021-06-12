@@ -12,6 +12,7 @@ import com.ensas.ebanking.services.EmailService;
 import com.ensas.ebanking.services.VirementService;
 import org.springframework.stereotype.Service;
 
+import javax.mail.MessagingException;
 import javax.transaction.Transactional;
 import java.time.LocalDate;
 
@@ -32,7 +33,7 @@ public class VirementServiceImpl implements VirementService {
     }
 
     @Override
-    public Virement makeVirement(String num_compte_source, String num_compte_beneficiaire, double amount) throws AccountNotFoundException, BalanceNotEnoughException {
+    public Virement makeVirement(String num_compte_source, String num_compte_beneficiaire, double amount) throws AccountNotFoundException, BalanceNotEnoughException, MessagingException {
 
         //find the source account
         Compte sourceCompte = compteService.findComptByNum(num_compte_source);
@@ -70,9 +71,9 @@ public class VirementServiceImpl implements VirementService {
         Compte updated_distCompte = compteService.updateCompte(distCompte);
 
         // send email to the beneficiary
-//        emailService.sendFoundRecievedEmail(beneficial_client.getNom() + "" + beneficial_client.getPrenom(),
-//                                            versement.getMontant(),
-//                                            beneficial_client.getEmail());
+        emailService.sendFoundRecievedEmail(beneficial_client.getNom() + "" + beneficial_client.getPrenom(),
+                                            virement.getMontant(),
+                                            beneficial_client.getEmail());
 
         return addedVirement;
     }

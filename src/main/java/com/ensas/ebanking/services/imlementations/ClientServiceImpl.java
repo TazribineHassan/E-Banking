@@ -37,9 +37,9 @@ public class ClientServiceImpl implements ClientService {
     private final ClientRepository clientRepository;
     private final PasswordEncoder passwordEncoder;
     private final AgenceRepository agenceRepository;
-    private UserRepository userRepository;
-    private EmailService emailService;
-    private Logger logger = LoggerFactory.getLogger(getClass());
+    private final UserRepository userRepository;
+    private final EmailService emailService;
+    private final Logger logger = LoggerFactory.getLogger(getClass());
 
     @Autowired
     public ClientServiceImpl(ClientRepository clientRepository, PasswordEncoder passwordEncoder, AgenceRepository agenceRepository, EmailService emailService, UserRepository userRepository) {
@@ -51,7 +51,7 @@ public class ClientServiceImpl implements ClientService {
     }
     @Override
     public List<Client> getClients() {
-        return (List<Client>) clientRepository.findAll();
+        return clientRepository.findAll();
     }
 
     @Override
@@ -97,7 +97,7 @@ public class ClientServiceImpl implements ClientService {
         client.setAgence(agence);
 
         //send user and password in the email to the client
-        //emailService.sendNewPasswordEmail(nom + " " + prenom, username, password, email);
+        emailService.sendNewPasswordEmail(nom + " " + prenom, username, password, email);
 
         //save client to database
         Client addedClient = this.clientRepository.save(client);
@@ -130,7 +130,7 @@ public class ClientServiceImpl implements ClientService {
         client.setDate_naissance(date_naissance);
         client.setActive(isActive);
 
-        return (Client) this.userRepository.save(client);
+        return this.userRepository.save(client);
     }
 
     @Override

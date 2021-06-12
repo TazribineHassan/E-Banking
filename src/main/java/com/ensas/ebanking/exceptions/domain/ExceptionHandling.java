@@ -138,6 +138,12 @@ public class ExceptionHandling implements ErrorController {
         return createHttpResponse(BAD_REQUEST, e.getMessage() );
     }
 
+    @ExceptionHandler(value = PasswordInvalideException.class)
+    public ResponseEntity<HttpResponse>  passwordInvalideException(PasswordInvalideException e){
+        logger.error(e.getMessage());
+        return createHttpResponse(BAD_REQUEST, e.getMessage() );
+    }
+
     private ResponseEntity<HttpResponse> createHttpResponse(HttpStatus httpStatus, String message){
         return new ResponseEntity<>(new HttpResponse(httpStatus.value(), httpStatus, httpStatus.getReasonPhrase().toUpperCase(), message), httpStatus) ;
     }

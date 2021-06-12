@@ -24,11 +24,11 @@ import static com.ensas.ebanking.constant.SecurityConstant.*;
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
-    private JwtAccessDeniedHandler jwtAccessDeniedHandler;
-    private JwtAuthorizationFilter jwtAuthorizationFilter;
-    private JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
-    private UserDetailsService userDetailsService;
-    private BCryptPasswordEncoder bCryptPasswordEncoder;
+    private final JwtAccessDeniedHandler jwtAccessDeniedHandler;
+    private final JwtAuthorizationFilter jwtAuthorizationFilter;
+    private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
+    private final UserDetailsService userDetailsService;
+    private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
     public SecurityConfiguration(JwtAccessDeniedHandler jwtAccessDeniedHandler,
                                  JwtAuthorizationFilter jwtAuthorizationFilter,

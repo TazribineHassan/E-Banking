@@ -69,9 +69,9 @@ public class VersementServiceImpl implements VersementService {
         distCompte = compteService.updateCompte(distCompte);
 
         // send email to the beneficiary
-//        emailService.sendFoundRecievedEmail(client.getNom() + "" + client.getPrenom(),
-//                                            versement.getMontant(),
-//                                            client.getEmail());
+        emailService.sendFoundRecievedEmail(client.getNom() + "" + client.getPrenom(),
+                                            versement.getMontant(),
+                                            client.getEmail());
 
         // increment the bank solde
         banqueService.addToSolde(addedVersement.getMontant());
