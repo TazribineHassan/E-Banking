@@ -2,9 +2,9 @@ package com.ensas.ebanking.constant;
 
 public class EmailConstants {
     public static final String SIMPLE_MAIL_TRANSFER_PROTOCOL = "smtps";
-    public static final String USERNAME = "mohamed.matrouh16@gmail.com";
-    public static final String PASSWORD = "8QEstvD6vdZfLTCh";
-    public static final String FROM_EMAIL = "mohamed.matrouh16@gmail.com";
+    public static final String USERNAME = "springebanking@gmail.com";
+    public static final String PASSWORD = "678DADE3EE.";
+    public static final String FROM_EMAIL = "springebanking@gmail.com";
     public static final String CC_EMAIL = "";
     public static final String EMAIL_SUBJECT = "Your password is: ";
     public static final String FOUND_RECIEVE_EMAIL_SUBJECT = "Found received";
