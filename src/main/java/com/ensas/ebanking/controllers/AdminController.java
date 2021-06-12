@@ -20,10 +20,7 @@ import javax.servlet.http.HttpSession;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 import static com.ensas.ebanking.enumeration.Role.ROLE_ADMIN;
 import static com.ensas.ebanking.enumeration.Role.ROLE_AGENT;
@@ -98,6 +95,7 @@ public class AdminController {
             return "redirect:/Admin/loginError";
         }
         else{
+
             double solde=banqueRepository.findById(1L).get().getSolde();
             int agents=agentRepository.findByIsActive(true).size();
             int agencesInactif=agenceRepository.findByActive(false).size();
@@ -107,6 +105,18 @@ public class AdminController {
             model.addAttribute("agents",agents);
             model.addAttribute("agences",agences);
             model.addAttribute("clients",clients);
+            model.addAttribute("clientM1",nombreMois1());
+            model.addAttribute("clientM2",nombreMois2());
+            model.addAttribute("clientM3",nombreMois3());
+            model.addAttribute("clientM4",nombreMois4());
+            model.addAttribute("clientM5",nombreMois5());
+            model.addAttribute("clientM6",nombreMois6());
+            model.addAttribute("clientM7",nombreMois7());
+            model.addAttribute("clientM8",nombreMois8());
+            model.addAttribute("clientM9",nombreMois9());
+            model.addAttribute("clientM10",nombreMois10());
+            model.addAttribute("clientM11",nombreMois11());
+            model.addAttribute("clientM12",nombreMois12());
             model.addAttribute("agencesInactives",agencesInactif);
             Admin admin=adminRepository.findAll().get(0);
             model.addAttribute("admin",admin);
@@ -383,6 +393,44 @@ public class AdminController {
     private String generateCode() {
         return RandomStringUtils.randomAlphanumeric(7);
     }
+   private int nombreMois1(){
+        return clientRepository.findClientMounth(1).size();
+   }
+    private int nombreMois2(){
+        return clientRepository.findClientMounth(2).size()+nombreMois1();
+    }
+    private int nombreMois3(){
+        return clientRepository.findClientMounth(3).size()+nombreMois2();
+    }
+    private int nombreMois4(){
+        return clientRepository.findClientMounth(4).size()+nombreMois3();
+    }
+    private int nombreMois5(){
+        return clientRepository.findClientMounth(5).size()+nombreMois4();
+    }
+    private int nombreMois6(){
+        return clientRepository.findClientMounth(6).size()+nombreMois5();
+    }
+    private int nombreMois7(){
+        return clientRepository.findClientMounth(7).size()+nombreMois6();
+    }
+    private int nombreMois8(){
+        return clientRepository.findClientMounth(8).size()+nombreMois7();
+    }
+    private int nombreMois9(){
+        return clientRepository.findClientMounth(9).size()+nombreMois8();
+    }
+    private int nombreMois10(){
+        return clientRepository.findClientMounth(10).size()+nombreMois9();
+    }
+    private int nombreMois11(){
+        return clientRepository.findClientMounth(11).size()+nombreMois10();
+    }
+    private int nombreMois12(){
+        return clientRepository.findClientMounth(12).size()+nombreMois11();
+    }
+
+
 
     }
 
