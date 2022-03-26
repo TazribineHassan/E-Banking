@@ -22,5 +22,11 @@ jobs:
         java-version: '11'
         distribution: 'temurin'
         cache: maven
+    - name: Install mysql server
+    - uses: mirromutth/mysql-action@v1.1
+      with:
+        mysql database: 'ebanking'
+        mysql user: 'mohamed'
+        mysql password: ''
     - name: Build with Maven
       run: mvn -B package --file pom.xml
